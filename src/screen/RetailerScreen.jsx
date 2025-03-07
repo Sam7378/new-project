@@ -16,6 +16,22 @@ const RetailerScreen = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [name, setName] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleMobileChange = (text) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+
+    if (numericText.length <= 10) {
+      setMobileNumber(numericText);
+    }
+
+    if (numericText.length === 10) {
+      const mobileRegex = /^[6-9]\d{9}$/;
+      setError(mobileRegex.test(numericText) ? "" : "Invalid mobile number!");
+    } else {
+      setError("Mobile number must be 10 digits.");
+    }
+  };
 
   useEffect(() => {
     const getMobileNumber = async () => {
@@ -28,7 +44,6 @@ const RetailerScreen = () => {
   }, []);
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Image
           source={require("../assets/demohead.png")}
@@ -42,10 +57,8 @@ const RetailerScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Section Title */}
       <Text style={styles.title}>Tell us your mobile number</Text>
 
-      {/* Input Fields */}
       <View style={styles.inputBox}>
         <Text style={styles.label}>Mobile No</Text>
         <TextInput
@@ -54,15 +67,14 @@ const RetailerScreen = () => {
           maxLength={10}
           placeholder="Enter Mobile Number"
           value={mobileNumber}
-          onChangeText={setMobileNumber}
+          onChangeText={handleMobileChange}
         />
       </View>
       <View style={styles.inputBox}>
         <Text style={styles.label}>Name</Text>
         <TextInput
           // style={styles.input}
-          keyboardType="numeric"
-          maxLength={10}
+
           placeholder="Enter Name"
           value={name}
           onChangeText={setName}

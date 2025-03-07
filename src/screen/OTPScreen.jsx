@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   StyleSheet,
+  ToastAndroid,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -47,15 +48,20 @@ const OTPScreen = () => {
   const handleVerifyOtp = () => {
     const enteredOtp = otp.join("");
     if (enteredOtp === generatedOtp) {
+      // ToastAndroid.show(
+      //   "Success",
+      //   "OTP Verified Successfully!",
+      //   ToastAndroid.SHORT
+      // );
       Alert.alert("Success", "OTP Verified Successfully!");
-      navigation.navigate("Home");
+      navigation.navigate("MainApp");
     } else {
       Alert.alert("Error", "Incorrect OTP. Please try again.");
     }
   };
 
   const handleChangeText = (text, index) => {
-    if (text.length > 1) return;
+    if (!/^\d?$/.test(text)) return;
 
     let newOtp = [...otp];
     newOtp[index] = text;

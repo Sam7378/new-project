@@ -1,127 +1,129 @@
 import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Image, Text } from "react-native";
-import { CartProvider, CartContext } from "../context/CartContext";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Svg, { Path } from "react-native-svg";
+import ScanScreen from "../screen/ScanScreen";
 import HomeScreen from "../screen/HomeScreen";
-import ProductDetailsScreen from "../screen/ProductDetailsScreen";
-import CartScreen from "../screen/CartScreen";
-import ReorderScreen from "../screen/ReorderScreen";
-import AccountScreen from "../screen/AccountScreen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const { width } = Dimensions.get("window");
 
-const MyHomeStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Home" component={HomeScreen} />
-    <Stack.Screen name="ProductDetail" component={ProductDetailsScreen} />
-  </Stack.Navigator>
+// Screens
+
+const PassbookScreen = () => (
+  <View style={styles.screen}>
+    <Text>📘 Passbook</Text>
+  </View>
 );
 
-// Separate cart icon component to avoid hook issues
-const CartIcon = ({ focused, size }) => {
-  const { cartItems } = React.useContext(CartContext);
-  const iconSource = focused
-    ? require("../assets/focused/shopping_cart.png")
-    : require("../assets/normal/shopping_cart.png");
+const Tab = createBottomTabNavigator();
 
-  const badgeColor = focused ? "#E96E6E" : "#C0C0C0";
-
+// Custom Bottom Tab Background with Only the Scan Section Raised
+const CustomTabBarBackground = () => {
   return (
-    <View style={{ position: "relative" }}>
-      <Image
-        source={iconSource}
-        style={{ height: size, width: size, resizeMode: "center" }}
-      />
-      {cartItems.length > 0 && (
-        <View
-          style={{
-            position: "absolute",
-            right: -3,
-            bottom: 22,
-            height: 14,
-            width: 14,
-            backgroundColor: badgeColor,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 10 }}>
-            {cartItems.length}
-          </Text>
-        </View>
-      )}
+    <View style={styles.tabBarContainer}>
+      <Svg width={width} height={90} viewBox={`0 0 ${width} 90`} fill="white">
+        <Path
+          d={`
+            M0,20 
+            H${width * 0.4} 
+            Q${width * 0.5},-10 ${width * 0.6},20 
+            H${width} 
+            V90 
+            H0 
+            Z
+          `}
+          fill="white"
+        />
+      </Svg>
     </View>
   );
 };
 
-const BottomTabs = ({ setIsLoggedIn }) => (
-  <CartProvider>
+const BottomTabs = ({ navigation }) => {
+  return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false, tabBarShowLabel: false }}
+      screenOptions={{
+        tabBarShowLabel: true,
+        tabBarStyle: { height: 90, backgroundColor: "transparent" },
+        tabBarBackground: () => <CustomTabBarBackground />,
+        tabBarLabelStyle: { fontSize: 14, fontWeight: "bold" },
+        headerShown: false,
+      }}
     >
+      {/* Home Tab */}
       <Tab.Screen
-        name="HOME_STACK"
-        component={MyHomeStack}
+        name="Home"
+        component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/focused/home.png")
-                  : require("../assets/normal/home.png")
-              }
-              style={{ height: size, width: size, resizeMode: "center" }}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+              <MaterialCommunityIcons
+                name="home-outline"
+                color={color}
+                size={32}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
+
+      {/* Scan Tab (Middle Section Dips Up) */}
       <Tab.Screen
-        name="REORDER"
-        component={ReorderScreen}
+        name="Scan"
+        component={ScanScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/tracking2.png")
-                  : require("../assets/tracking1.png")
-              }
-              style={{ height: size, width: size, resizeMode: "center" }}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Scan")}>
+              <MaterialCommunityIcons
+                name="barcode-scan"
+                color={color}
+                size={32}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
+
+      {/* Passbook Tab */}
       <Tab.Screen
-        name="CART"
-        component={CartScreen}
+        name="Passbook"
+        component={PassbookScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <CartIcon focused={focused} size={size} />
+          tabBarIcon: ({ color, size }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Passbook")}>
+              <MaterialCommunityIcons
+                name="book-outline"
+                color={color}
+                size={32}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
-      <Tab.Screen
-        name="ACCOUNT"
-        options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/focused/account.png")
-                  : require("../assets/normal/account.png")
-              }
-              style={{ height: size, width: size, resizeMode: "center" }}
-            />
-          ),
-        }}
-      >
-        {(props) => <AccountScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
-      </Tab.Screen>
     </Tab.Navigator>
-  </CartProvider>
-);
+  );
+};
 
 export default BottomTabs;
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tabBarContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: 90, // Taller to accommodate the dip
+    backgroundColor: "transparent",
+  },
+});

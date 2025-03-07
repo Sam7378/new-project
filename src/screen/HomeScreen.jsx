@@ -19,6 +19,7 @@ import ProductCard from "../components/ProductCard";
 import data from "../data/data.json";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CampaignModal from "../components/CampaignModal";
 
 const HomeScreen = () => {
   const [searchItem, setSearchItem] = useState("");
@@ -26,6 +27,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [notificationCount, setNotificationCount] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const handleProductDetails = useCallback(
     (item) => {
       navigation.navigate("ProductDetail", { item });
@@ -47,6 +49,16 @@ const HomeScreen = () => {
   const filteredLists = products.filter((product) =>
     product.title.toLowerCase().includes(searchItem.toLowerCase())
   );
+
+  const campaignData = {
+    title: "🔥 Exclusive App Promotion!",
+    image: "https://via.placeholder.com/300",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  };
+
+  useEffect(() => {
+    setTimeout(() => setModalVisible(true), 1000); // Show after 1 sec
+  }, []);
 
   useEffect(() => {
     const fetchNotificationCount = async () => {
@@ -91,7 +103,14 @@ const HomeScreen = () => {
           )}
         </TouchableOpacity>
       </View>
-
+      <View style={styles.modalContainer}>
+        <Text>🏡 Welcome to Home Page</Text>
+        <CampaignModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          campaignData={campaignData}
+        />
+      </View>
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Image
@@ -146,6 +165,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerContainer: {
     flexDirection: "row",

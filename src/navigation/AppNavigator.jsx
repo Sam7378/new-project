@@ -8,11 +8,13 @@ import RetailerScreen from "../screen/RetailerScreen";
 import DistributorScreen from "../screen/DistributorScreen";
 import SignUpScreen from "../screen/SignUpScreen";
 import OTPScreen from "../screen/OTPScreen";
-import HomeScreen from "../screen/HomeScreen";
+import BottomTabs from "./BottomTabs";
+import ScanScreen from "../screen/ScanScreen";
+import DrawerNavigator from "../drawer/DrawerNavigator";
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigator = () => {
+const AppNavigator = ({ setIsLoggedIn }) => {
   const [loading, setLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState("Welcome"); // Default to Welcome screen
 
@@ -24,13 +26,14 @@ const AppNavigator = () => {
         const storedProfile = await AsyncStorage.getItem("profileSelected");
 
         if (firstTime !== "completed") {
-          setInitialRoute("Welcome"); // New user starts from Welcome
-        } else if (storedProfile === "Retailer") {
-          setInitialRoute("Retailer");
-        } else if (storedProfile === "Distributor") {
-          setInitialRoute("Distributor");
+          setInitialRoute("Welcome");
+        } else if (
+          storedProfile === "Retailer" ||
+          storedProfile === "Distributor"
+        ) {
+          setInitialRoute("MainApp"); // Navigate to Bottom Tabs after login
         } else {
-          setInitialRoute("ProfileSelection"); // If no profile is selected, go to ProfileSelection
+          setInitialRoute("ProfileSelection");
         }
       } catch (error) {
         console.error("Error checking status:", error);
@@ -43,7 +46,7 @@ const AppNavigator = () => {
   }, []);
 
   if (loading) {
-    return <Splash />; // Show splash screen while checking AsyncStorage
+    return <Splash />;
   }
 
   return (
@@ -60,7 +63,13 @@ const AppNavigator = () => {
       <Stack.Screen name="Distributor" component={DistributorScreen} />
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="OtpScreen" component={OTPScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="MainApp">
+        {(props) => (
+          <DrawerNavigator {...props} setIsLoggedIn={setIsLoggedIn} />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
+      <Stack.Screen name="Scan" component={ScanScreen} />
     </Stack.Navigator>
   );
 };

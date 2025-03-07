@@ -55,6 +55,18 @@ const RegistrationScreen = () => {
   };
 
   const handleSubmit = async () => {
+    if (
+      !form.mobileNumber.trim() ||
+      !form.firstName.trim() ||
+      !form.aadhar.trim() ||
+      !form.pincode.trim() ||
+      !form.address.trim() ||
+      !form.city.trim() ||
+      !form.state.trim()
+    ) {
+      Alert.alert("Error", "Please fill all required fields.");
+      return;
+    }
     try {
       await AsyncStorage.setItem("userDetails", JSON.stringify(form));
       await AsyncStorage.setItem("userMobile", form.mobileNumber); // Store mobile number separately
@@ -92,24 +104,6 @@ const RegistrationScreen = () => {
         Please fill the following form to register
       </Text>
       <View style={{ padding: 20 }}>
-        {[
-          "firstName",
-          "formId",
-          "ownerName",
-          "pincode",
-          "address",
-          "city",
-          "district",
-          "state",
-          "pan",
-        ].map((field) => (
-          <TextInput
-            key={field}
-            placeholder={field}
-            style={styles.input}
-            onChangeText={(text) => handleChange(field, text)}
-          />
-        ))}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TextInput
             placeholder="Mobile Number"
@@ -138,7 +132,11 @@ const RegistrationScreen = () => {
               placeholder="Enter OTP"
               style={[styles.input, { flex: 1 }]}
               keyboardType="numeric"
-              onChangeText={(text) => handleChange("otp", text)}
+              onChangeText={(text) => {
+                if (/^\d*$/.test(text)) {
+                  handleChange("otp", text);
+                }
+              }}
             />
             <TouchableOpacity
               style={styles.verifyButton}
@@ -148,6 +146,25 @@ const RegistrationScreen = () => {
             </TouchableOpacity>
           </View>
         )}
+        {[
+          "firstName",
+          "formId",
+          "ownerName",
+          "pincode",
+          "address",
+          "city",
+          "district",
+          "state",
+          "pan",
+        ].map((field) => (
+          <TextInput
+            key={field}
+            placeholder={field}
+            style={styles.input}
+            onChangeText={(text) => handleChange(field, text)}
+          />
+        ))}
+
         <TextInput
           placeholder="Aadhar Number"
           style={styles.input}
@@ -190,9 +207,7 @@ const RegistrationScreen = () => {
           />
         )}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-            Submit
-          </Text>
+          <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -226,10 +241,15 @@ const styles = {
     borderRadius: 5,
   },
   submitButton: {
-    backgroundColor: "blue",
+    backgroundColor: "#c9202c",
     padding: 15,
     marginTop: 20,
     borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 18,
   },
 };
 
