@@ -1,67 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const Header = () => {
-  const navigation = useNavigation();
-  const [notificationCount, setNotificationCount] = useState(0);
-
-  useEffect(() => {
-    fetchNotificationCount();
-  }, []);
-
-  const fetchNotificationCount = async () => {
-    const storedNotifications = await AsyncStorage.getItem("notifications");
-    if (storedNotifications) {
-      setNotificationCount(JSON.parse(storedNotifications).length);
-    }
-  };
-
-  const resetBadge = () => {
-    setNotificationCount(0); // Reset badge count
-  };
-
+const Header = ({ navigation }) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 10,
-      }}
-    >
-      {/* Bell Icon with Badge */}
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("NotificationScreen", { resetBadge })
-        }
-      >
-        <Icon name="notifications" size={28} color="black" />
-        {notificationCount > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{notificationCount}</Text>
-          </View>
-        )}
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <Ionicons name="menu" size={30} color="#d15560" />
+      </TouchableOpacity>
+      <Image source={require("../assets/demohead.png")} style={styles.logo} />
+      <TouchableOpacity>
+        <Ionicons name="notifications" size={30} color="#ca000b" />
       </TouchableOpacity>
     </View>
   );
 };
 
-const styles = {
-  badge: {
-    position: "absolute",
-    right: -6,
-    top: -3,
-    backgroundColor: "red",
-    borderRadius: 10,
-    paddingHorizontal: 5,
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    backgroundColor: "#fff",
   },
-  badgeText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-};
+  logo: { width: 100, height: 40 },
+});
 
 export default Header;

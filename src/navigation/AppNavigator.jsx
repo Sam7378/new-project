@@ -11,6 +11,12 @@ import OTPScreen from "../screen/OTPScreen";
 import BottomTabs from "./BottomTabs";
 import ScanScreen from "../screen/ScanScreen";
 import DrawerNavigator from "../drawer/DrawerNavigator";
+import BankAccount from "../screen/BankAccount";
+import ProductCatalogue from "../screen/ProductCatalogue";
+import ReportAnIssue from "../screen/ReportAnIssue";
+import HelpSupportScreen from "../screen/HelpSupportScreen";
+import Rewards from "../screen/Rewards";
+import FeedbackScreen from "../screen/FeedbackScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +76,12 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       </Stack.Screen>
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Scan" component={ScanScreen} />
+      <Stack.Screen name="BankAccount" component={BankAccount} />
+      <Stack.Screen name="ProductCatalogue" component={ProductCatalogue} />
+      <Stack.Screen name="ReportAnIssue" component={ReportAnIssue} />
+      <Stack.Screen name="Help" component={HelpSupportScreen} />
+      <Stack.Screen name="Reward" component={Rewards} />
+      <Stack.Screen name="Feedback" component={FeedbackScreen} />
     </Stack.Navigator>
   );
 };

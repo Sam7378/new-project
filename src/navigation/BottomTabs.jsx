@@ -11,20 +11,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Svg, { Path } from "react-native-svg";
 import ScanScreen from "../screen/ScanScreen";
 import HomeScreen from "../screen/HomeScreen";
+import PassbookScreen from "../screen/PassbookScreen";
 
 const { width } = Dimensions.get("window");
 
-// Screens
-
-const PassbookScreen = () => (
-  <View style={styles.screen}>
-    <Text>📘 Passbook</Text>
-  </View>
-);
-
 const Tab = createBottomTabNavigator();
 
-// Custom Bottom Tab Background with Only the Scan Section Raised
 const CustomTabBarBackground = () => {
   return (
     <View style={styles.tabBarContainer}>
@@ -51,42 +43,45 @@ const BottomTabs = ({ navigation }) => {
     <Tab.Navigator
       screenOptions={{
         tabBarShowLabel: true,
-        tabBarStyle: { height: 90, backgroundColor: "transparent" },
+        tabBarActiveTintColor: "#bd1422",
+        tabBarInactiveTintColor: "#bd1422",
+
+        tabBarStyle: {
+          height: 90,
+          backgroundColor: "transparent",
+          marginBottom: 20,
+          possition: "absolute",
+          elevation: 0,
+        },
         tabBarBackground: () => <CustomTabBarBackground />,
-        tabBarLabelStyle: { fontSize: 14, fontWeight: "bold" },
+        tabBarLabelStyle: { fontSize: 14, fontWeight: "bold", marginTop: -30 },
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
-      {/* Home Tab */}
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
+          tabBarLabel: "Home",
+          tabBarStyle: { color: "black" },
           tabBarIcon: ({ color, size }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-              <MaterialCommunityIcons
-                name="home-outline"
-                color={color}
-                size={32}
-              />
-            </TouchableOpacity>
+            <MaterialCommunityIcons name="home" color={color} size={32} />
           ),
         }}
       />
 
-      {/* Scan Tab (Middle Section Dips Up) */}
       <Tab.Screen
         name="Scan"
         component={ScanScreen}
         options={{
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ color, size }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Scan")}>
-              <MaterialCommunityIcons
-                name="barcode-scan"
-                color={color}
-                size={32}
-              />
-            </TouchableOpacity>
+            <MaterialCommunityIcons
+              name="barcode-scan"
+              color={color}
+              size={32}
+            />
           ),
         }}
       />
@@ -96,14 +91,13 @@ const BottomTabs = ({ navigation }) => {
         name="Passbook"
         component={PassbookScreen}
         options={{
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ color, size }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Passbook")}>
-              <MaterialCommunityIcons
-                name="book-outline"
-                color={color}
-                size={32}
-              />
-            </TouchableOpacity>
+            <MaterialCommunityIcons
+              name="book-outline"
+              color={color}
+              size={32}
+            />
           ),
         }}
       />
@@ -123,7 +117,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: 90, // Taller to accommodate the dip
+    height: 80,
     backgroundColor: "transparent",
   },
 });
