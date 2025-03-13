@@ -54,7 +54,12 @@ const BottomTabs = ({ navigation }) => {
           elevation: 0,
         },
         tabBarBackground: () => <CustomTabBarBackground />,
-        tabBarLabelStyle: { fontSize: 14, fontWeight: "bold", marginTop: -30 },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          marginTop: -30,
+          color: "black",
+        },
         headerShown: false,
         tabBarHideOnKeyboard: true,
       }}
@@ -63,8 +68,6 @@ const BottomTabs = ({ navigation }) => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Home",
-          tabBarStyle: { color: "black" },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={32} />
           ),
