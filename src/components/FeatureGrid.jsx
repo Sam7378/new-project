@@ -12,7 +12,7 @@ const featureData = [
   {
     name: "Bank Account",
     image: require("../assets/bank.png"),
-    screen: "BankAccount",
+    screen: "Bank",
   },
   {
     name: "Passbook",

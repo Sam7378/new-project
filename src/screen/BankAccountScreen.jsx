@@ -22,7 +22,7 @@ const BankAccountScreen = () => {
         <Text style={styles.sectionTitle}>Select Method</Text>
         {/* First Section */}
         <View style={[styles.devider, { marginHorizontal: 15 }]} />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("BankDetails")}>
           <View style={styles.section}>
             <View style={styles.circle}>
               <Image
