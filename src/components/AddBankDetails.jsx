@@ -82,7 +82,7 @@ const AddBankDetails = ({ navigation }) => {
     try {
       await AsyncStorage.setItem("bankDetails", JSON.stringify(bankDetails));
       Alert.alert("Success", "Bank details saved successfully!");
-      navigation.goBack();
+      navigation.navigate("Bank");
     } catch (error) {
       Alert.alert("Error", "Failed to save bank details");
     }

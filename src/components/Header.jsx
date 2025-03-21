@@ -6,7 +6,7 @@ const Header = ({ navigation }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
-        <Ionicons name="menu" size={30} color="#d15560" />
+        <Ionicons name="list" size={30} color="#d15560" />
       </TouchableOpacity>
       <Image source={require("../assets/demohead.png")} style={styles.logo} />
       <TouchableOpacity>

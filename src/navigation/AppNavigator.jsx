@@ -20,6 +20,7 @@ import FeedbackScreen from "../screen/FeedbackScreen";
 import BankAccountScreen from "../screen/BankAccountScreen";
 import AddBankDetails from "../components/AddBankDetails";
 import BankAccount from "../components/BankAccount";
+import UpiAddressScreen from "../screen/UpiAddressScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +88,7 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       <Stack.Screen name="Feedback" component={FeedbackScreen} />
       <Stack.Screen name="BankDetails" component={AddBankDetails} />
       <Stack.Screen name="Bank" component={BankAccount} />
+      <Stack.Screen name="UPIAddress" component={UpiAddressScreen} />
     </Stack.Navigator>
   );
 };

@@ -20,7 +20,7 @@ const DrawerNavigator = ({ setIsLoggedIn }) => {
         drawerStyle: { backgroundColor: "#fff" },
       }}
     >
-      <Drawer.Screen name="Home" component={BottomTabs} />
+      <Drawer.Screen name="Main" component={BottomTabs} />
       <Drawer.Screen name="MyStatus" component={MyStatusScreen} />
       <Drawer.Screen name="Account">
         {(props) => <AccountScreen {...props} setIsLoggedIn={setIsLoggedIn} />}

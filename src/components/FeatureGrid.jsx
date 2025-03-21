@@ -11,22 +11,22 @@ import {
 const featureData = [
   {
     name: "Bank Account",
-    image: require("../assets/bank.png"),
+    image: require("../assets/bank2.png"),
     screen: "Bank",
   },
   {
     name: "Passbook",
-    image: require("../assets/passbook1.png"),
+    image: require("../assets/passbook2.png"),
     screen: "Passbook",
   },
   {
     name: "Product Catalogue",
-    image: require("../assets/book.png"),
+    image: require("../assets/book1.png"),
     screen: "ProductCatalogue",
   },
   {
     name: "Report an Issue",
-    image: require("../assets/report.png"),
+    image: require("../assets/report1.png"),
     screen: "ReportAnIssue",
   },
   {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 5,
   },
-  featureIcon: { width: 37, height: 37, resizeMode: "contain" },
+  featureIcon: { width: 32, height: 32, resizeMode: "contain" },
   featureText: {
     textAlign: "center",
     fontSize: 14,

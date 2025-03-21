@@ -8,15 +8,16 @@ import { RadioButton } from "react-native-paper";
 const BankAccount = () => {
   const navigation = useNavigation();
   const [bankDetails, setBankDetails] = useState(null);
-  const [selectedBank, setSelectedBank] = useState(null);
+  const [upiAddress, setUpiAddress] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(null);
 
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
-        const data = await AsyncStorage.getItem("bankDetails");
-        if (data) {
-          setBankDetails(JSON.parse(data));
-        }
+        const bankData = await AsyncStorage.getItem("bankDetails");
+        const upiData = await AsyncStorage.getItem("upiaddress");
+        if (bankData) setBankDetails(JSON.parse(bankData));
+        if (upiData) setUpiAddress(upiData);
       } catch (error) {
         Alert.alert("Error", "Failed to load bank details");
       }
@@ -27,17 +28,32 @@ const BankAccount = () => {
   }, [navigation]);
 
   const deleteBankDetails = async () => {
-    if (!selectedBank) {
-      Alert.alert("Alert", "Please select bank detail");
+    if (selectedMethod !== "bank") {
+      Alert.alert("Alert", "Please select a bank account to delete");
       return;
     }
     try {
       await AsyncStorage.removeItem("bankDetails");
       setBankDetails(null);
-      setSelectedBank(null);
+      setSelectedMethod(null);
       Alert.alert("Success", "Bank details deleted successfully");
     } catch (error) {
       Alert.alert("Error", "Failed to delete bank details");
+    }
+  };
+
+  const deleteUpiAddress = async () => {
+    if (selectedMethod !== "upi") {
+      Alert.alert("Alert", "Please select a UPI address to delete");
+      return;
+    }
+    try {
+      await AsyncStorage.removeItem("upiaddress");
+      setUpiAddress(null);
+      setSelectedMethod(null);
+      Alert.alert("Success", "UPI Address deleted successfully");
+    } catch (error) {
+      Alert.alert("Error", "Failed to delete UPI Address");
     }
   };
 
@@ -56,8 +72,13 @@ const BankAccount = () => {
         <Text style={styles.sectionTitle}>Preferred Method</Text>
         <View style={styles.divider} />
 
-        {/* Show Saved Bank Details */}
-        {bankDetails ? (
+        {/* Show message only when both bank and UPI are missing */}
+        {!bankDetails && !upiAddress && (
+          <Text style={styles.noAccountText}>No bank details added yet</Text>
+        )}
+
+        {/* Bank Details */}
+        {bankDetails && (
           <View style={styles.bankCard}>
             <View style={styles.bankInfo}>
               <View>
@@ -86,32 +107,51 @@ const BankAccount = () => {
               {/* Radio Button and Delete Icon */}
               <View style={styles.rightSection}>
                 <RadioButton
-                  value={bankDetails.selectedBank}
-                  status={
-                    selectedBank === bankDetails.selectedBank
-                      ? "checked"
-                      : "unchecked"
-                  }
+                  value="bank"
+                  status={selectedMethod === "bank" ? "checked" : "unchecked"}
                   onPress={() =>
-                    setSelectedBank((prev) =>
-                      prev === bankDetails.selectedBank
-                        ? null
-                        : bankDetails.selectedBank
-                    )
+                    setSelectedMethod(selectedMethod === "bank" ? null : "bank")
                   }
                 />
                 <TouchableOpacity onPress={deleteBankDetails}>
                   <MaterialIcons
                     name="delete"
                     size={28}
-                    color={selectedBank ? "red" : "grey"}
+                    color={selectedMethod === "bank" ? "red" : "grey"}
                   />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
-        ) : (
-          <Text style={styles.noAccountText}>No bank details added yet</Text>
+        )}
+
+        {/* UPI Address */}
+        {upiAddress && (
+          <View style={styles.bankCard}>
+            <View style={styles.bankInfo}>
+              <View>
+                <Text style={styles.bankText}>
+                  <Text style={styles.boldText}>UPI Address:</Text> {upiAddress}
+                </Text>
+              </View>
+              <View style={styles.rightSection}>
+                <RadioButton
+                  value="upi"
+                  status={selectedMethod === "upi" ? "checked" : "unchecked"}
+                  onPress={() =>
+                    setSelectedMethod(selectedMethod === "upi" ? null : "upi")
+                  }
+                />
+                <TouchableOpacity onPress={deleteUpiAddress}>
+                  <MaterialIcons
+                    name="delete"
+                    size={28}
+                    color={selectedMethod === "upi" ? "red" : "grey"}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         )}
 
         {/* Floating Add Button */}
@@ -119,7 +159,7 @@ const BankAccount = () => {
 
         <TouchableOpacity
           style={styles.addButtonCircle}
-          onPress={() => navigation.navigate("BankDetails")}
+          onPress={() => navigation.navigate("BankAccountScreen")}
         >
           <MaterialIcons name="add" size={40} color="#fff" />
         </TouchableOpacity>
@@ -168,7 +208,7 @@ const styles = StyleSheet.create({
   },
   bankCard: {
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 30,
     borderRadius: 10,
     elevation: 3,
     marginVertical: 15,

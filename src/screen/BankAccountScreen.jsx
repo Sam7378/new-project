@@ -43,12 +43,12 @@ const BankAccountScreen = () => {
         </TouchableOpacity>
         <View style={[styles.devider, { marginHorizontal: 15 }]} />
         {/* Second Section (Similar to First) */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("UPIAddress")}>
           <View style={styles.section}>
             {/* <Text style={styles.sectionTitle}>Select Method</Text> */}
             <View style={styles.circle}>
               <Image
-                source={require("../assets/upi1.png")} // Replace with actual image
+                source={require("../assets/upi1.png")}
                 style={styles.icon}
               />
             </View>
