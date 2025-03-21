@@ -50,20 +50,23 @@ const PassbookScreen = ({ navigation }) => {
     {
       id: "1",
       title: "Points Earn History",
-      subtitle: "List of points redeemed by you",
+      subtitle: "list of points redeemed by you",
       image: require("../assets/coins.png"),
+      screen: "Point",
     },
     {
       id: "2",
-      title: "Points Earn History",
-      subtitle: "List of points redeemed by you",
+      title: "Gift Redeemed History",
+      subtitle: "Points Earn History",
       image: require("../assets/star.png"),
+      screen: "Gift",
     },
     {
       id: "3",
-      title: "Points Earn History",
-      subtitle: "List of points redeemed by you",
+      title: "Caseback History",
+      subtitle: "list of points redeemed by you",
       image: require("../assets/money-back.png"),
+      screen: "Caseback",
     },
   ];
 
@@ -125,31 +128,43 @@ const PassbookScreen = ({ navigation }) => {
             numColumns={viewType === "grid" ? 2 : 1} // Change column count dynamically
             renderItem={({ item }) =>
               viewType === "grid" ? (
-                <View style={styles.gridCard}>
-                  <TouchableOpacity style={styles.gridButton}>
-                    <View style={styles.iconSquare}>
-                      <Image source={item.image} style={styles.featureIcon} />
-                    </View>
-                    <Text style={styles.gridText}>{item.title}</Text>
-                  </TouchableOpacity>
+                <View style={styles.cardGrid}>
+                  <View>
+                    <TouchableOpacity
+                      style={styles.gridButton}
+                      onPress={() => navigation.navigate(item.screen)}
+                    >
+                      <View style={styles.iconSquare}>
+                        <Image source={item.image} style={styles.featureIcon} />
+                      </View>
+                    </TouchableOpacity>
+                    <Text style={styles.gridText}>
+                      {item.title.split(" ").join("\n")}
+                    </Text>
+                  </View>
                 </View>
               ) : (
                 <View style={styles.listCard}>
-                  <TouchableOpacity style={styles.historyCard}>
+                  <TouchableOpacity
+                    style={styles.historyCard}
+                    onPress={() => navigation.navigate(item.screen)}
+                  >
                     <View style={styles.square}>
                       <Image source={item.image} style={styles.featureIcon} />
                     </View>
-                    <View>
+                    <View style={styles.midTitle}>
                       <Text style={styles.historyTitle}>{item.title}</Text>
                       <Text style={styles.historySubtitle}>
-                        List of points redeemed by you
+                        {item.subtitle}
                       </Text>
                     </View>
-                    <Ionicons
-                      name="chevron-forward-circle"
-                      size={24}
-                      color="black"
-                    />
+                    <View style={styles.rightIcon}>
+                      <Ionicons
+                        name="chevron-forward-circle"
+                        size={24}
+                        color="black"
+                      />
+                    </View>
                   </TouchableOpacity>
                 </View>
               )
@@ -173,18 +188,20 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
 
-    padding: 20,
+    padding: 10,
   },
+
   headerText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
 
     marginLeft: 10,
   },
   userName: {
-    color: "white",
-    fontSize: 18,
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   pointsContainer: {
     paddingVertical: 10,
@@ -195,11 +212,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   toggleWrap: {
-    width: "92%",
+    width: "85%",
     height: "40%",
     borderWidth: 1,
     borderColor: "red",
-    marginLeft: 22,
+    marginLeft: 30,
     overflow: "hidden",
     marginTop: 80,
     borderRadius: 18,
@@ -270,8 +287,8 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: "row",
 
-    left: 290,
-    gap: 20,
+    left: 240,
+    gap: 10,
     marginVertical: 10,
     marginTop: 20,
   },
@@ -288,61 +305,78 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  midTitle: {
+    right: 22,
+  },
   historyTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
+    color: "#000",
   },
   historySubtitle: {
-    fontSize: 14,
+    fontSize: 11,
     color: "gray",
+    fontWeight: "600",
   },
   listCard: {
     color: "red",
   },
-  gridCard: {
+  cardGrid: {
     flex: 1,
-    margin: 5,
+    marginTop: 15,
+    // backgroundColor: "red",
   },
   square: {
     width: 40,
     height: 40,
-    borderRadius: 10,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
     marginRight: 10,
     borderWidth: 0.5,
-    borderColor: "red",
+    borderColor: "#c9000a",
+    margin: 5,
   },
   featureIcon: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
     resizeMode: "contain",
   },
 
-  gridCard: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 15,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    margin: 5,
-    width: 120, // Adjust width
-    height: 120, // Adjust height
-  },
+  // gridCard: {
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   padding: 15,
+  //   backgroundColor: "#f9f9f9",
+  //   borderRadius: 8,
+  //   margin: 5,
+  //   width: 120, // Adjust width
+  //   height: 120, // Adjust height
+  // },
   iconSquare: {
     width: 60,
     height: 60,
-    borderRadius: 10,
+    borderRadius: 3,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    marginBottom: 5, // Add spacing for text
+    marginBottom: 5,
+    borderWidth: 1,
+    borderColor: "red",
   },
   gridText: {
+    // textAlign: "center",
+    // fontSize: 14,
+    // fontWeight: "bold",
+    //
+    // marginTop: 5,
+    // width: 100,
+
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
+    color: "#000",
   },
   listCard: {
     flexDirection: "row",
@@ -353,6 +387,9 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 8,
     padding: 15,
+  },
+  rightIcon: {
+    left: 20,
   },
 });
 

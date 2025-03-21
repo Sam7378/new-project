@@ -21,6 +21,9 @@ import BankAccountScreen from "../screen/BankAccountScreen";
 import AddBankDetails from "../components/AddBankDetails";
 import BankAccount from "../components/BankAccount";
 import UpiAddressScreen from "../screen/UpiAddressScreen";
+import PointsEarnHistory from "../components/PointsEarnHistory";
+import GiftRedeemedHistory from "../components/GiftRedeemedHistory";
+import CasebackHistory from "../components/CasebackHistory";
 
 const Stack = createNativeStackNavigator();
 
@@ -89,6 +92,9 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       <Stack.Screen name="BankDetails" component={AddBankDetails} />
       <Stack.Screen name="Bank" component={BankAccount} />
       <Stack.Screen name="UPIAddress" component={UpiAddressScreen} />
+      <Stack.Screen name="Point" component={PointsEarnHistory} />
+      <Stack.Screen name="Gift" component={GiftRedeemedHistory} />
+      <Stack.Screen name="Caseback" component={CasebackHistory} />
     </Stack.Navigator>
   );
 };
