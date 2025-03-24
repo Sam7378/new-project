@@ -1,34 +1,19 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
+import Fontisto from "react-native-vector-icons/Fontisto";
 
 const HelpSupportScreen = () => {
   const navigation = useNavigation();
-
-  const handlePress = (type) => {
-    switch (type) {
-      case "mail":
-        console.log("Navigate to Mail Support");
-        break;
-      case "whatsapp":
-        console.log("Navigate to WhatsApp Support");
-        break;
-      case "call":
-        console.log("Navigate to Call Support");
-        break;
-      default:
-        break;
-    }
+  const handleEmailPress = () => {
+    Linking.openURL("in-customer.service@bata.com");
   };
 
+  const handleCallPress = () => {
+    Linking.openURL("tel:1234567890");
+  };
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -37,66 +22,44 @@ const HelpSupportScreen = () => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={24} color="white" />
+          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Text style={styles.headerTitle}>Help and Support</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Customer Support</Text>
       </View>
 
-      {/* Scrollable Content */}
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Icon */}
-        <View style={styles.iconPlaceholder}>
-          <Image
-            source={require("../assets/help.png")}
-            style={styles.futureIcon}
+      {/* Support Image */}
+      <View style={styles.imageContainer}>
+        <Image source={require("../assets/help2.jpg")} style={styles.image} />
+      </View>
+
+      {/* Mail Support */}
+      <View style={styles.helpContainer}>
+        <TouchableOpacity style={styles.supportCard} onPress={handleEmailPress}>
+          <Fontisto name="email" size={36} color="#fff" style={styles.icon} />
+          <View>
+            <Text style={styles.supportText}>Mail Us</Text>
+            <Text style={styles.supportDetail}>
+              in-customer.service@bata.com
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        {/* Call Support */}
+        <TouchableOpacity style={styles.supportCard} onPress={handleCallPress}>
+          <Feather
+            name="phone-call"
+            size={36}
+            color="#fff"
+            style={styles.icon}
           />
-        </View>
-
-        <View style={styles.wrapContact}>
-          <Text style={styles.contactText}>Contact us</Text>
-        </View>
-
-        {/* Cards */}
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => handlePress("mail")}
-        >
-          <View style={styles.cardLeft}>
-            <Ionicons name="mail-outline" style={styles.cardIcon} />
-            <Text style={styles.iconText}>Mail</Text>
+          <View>
+            <Text style={styles.supportText}>Call Us</Text>
+            <Text style={styles.supportDetail}>1234567890</Text>
           </View>
-          <Text style={styles.cardMiddleText}>Mail Support</Text>
-          <Ionicons name="chevron-forward" style={styles.cardArrow} />
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => handlePress("whatsapp")}
-        >
-          <View style={styles.cardLeft}>
-            <Ionicons name="logo-whatsapp" style={styles.cardIcon} />
-            <Text style={styles.iconText}>WhatsApp</Text>
-          </View>
-          <Text style={styles.cardMiddleText}>WhatsApp Support</Text>
-          <Ionicons name="chevron-forward" style={styles.cardArrow} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => handlePress("call")}
-        >
-          <View style={styles.cardLeft}>
-            <Ionicons name="call-outline" style={styles.cardIcon} />
-            <Text style={styles.iconText}>Call</Text>
-          </View>
-          <Text style={styles.cardMiddleText}>Call Support</Text>
-          <Ionicons name="chevron-forward" style={styles.cardArrow} />
-        </TouchableOpacity>
-      </ScrollView>
+        <View style={styles.divider} />
+      </View>
     </View>
   );
 };
@@ -104,93 +67,68 @@ const HelpSupportScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#fff",
+    height: "100%",
   },
   header: {
-    height: 150,
-    backgroundColor: "#007AFF",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    position: "relative",
-  },
-  backButton: {
-    position: "absolute",
-    left: 15,
-    top: 15,
-  },
-  headerTitle: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-  },
-  scrollContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  iconPlaceholder: {
-    width: 99.5,
-    height: 128.73,
-    marginTop: 35,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  futureIcon: {
-    width: 99.5,
-    height: 128.73,
-    resizeMode: "contain",
-  },
-  wrapContact: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  contactText: {
-    color: "#3061AC",
-    fontSize: 28,
-    fontWeight: "bold",
-  },
-  card: {
-    width: "90%",
-    height: 108,
-    backgroundColor: "white",
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    marginBottom: 20,
     marginTop: 20,
-    borderRadius: 10,
-    elevation: 3,
-    justifyContent: "space-between",
-    alignSelf: "center",
+    left: 20,
   },
-  cardLeft: {
-    flexDirection: "column",
+  backButton: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    width: 80,
   },
-  cardIcon: {
-    fontSize: 30,
-    color: "#007AFF",
-    marginBottom: 5,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#000",
+    marginLeft: 10,
   },
-  iconText: {
-    fontSize: 14,
-    color: "#333",
-    textAlign: "center",
+  helpContainer: {
+    width: "100%",
+    backgroundColor: "#ca000b",
+    height: "100%",
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
   },
-  cardMiddleText: {
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  image: {
+    width: 350,
+    height: 350,
+    resizeMode: "contain",
+  },
+  supportCard: {
+    alignItems: "center",
+
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  icon: {
+    marginRight: 15,
+  },
+  supportText: {
+    marginTop: 10,
     fontSize: 18,
     fontWeight: "bold",
-    flex: 1,
+    color: "#fff",
     textAlign: "center",
-    color: "#000",
   },
-  cardArrow: {
-    fontSize: 28,
-    color: "#999",
+  supportDetail: {
+    fontSize: 16,
+    color: "#ffffff",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#fff",
+    marginVertical: 10,
+    opacity: 0.5,
   },
 });
 

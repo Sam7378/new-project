@@ -63,7 +63,7 @@ const PassbookScreen = ({ navigation }) => {
     },
     {
       id: "3",
-      title: "Caseback History",
+      title: "Cashback History",
       subtitle: "list of points redeemed by you",
       image: require("../assets/money-back.png"),
       screen: "Caseback",
@@ -314,7 +314,8 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   historySubtitle: {
-    fontSize: 11,
+    marginTop: 8,
+    fontSize: 12,
     color: "gray",
     fontWeight: "600",
   },
