@@ -25,6 +25,7 @@ import PointsEarnHistory from "../components/PointsEarnHistory";
 import GiftRedeemedHistory from "../components/GiftRedeemedHistory";
 import CashbackHistory from "../components/CashbackHistory";
 import ReportIssueScreen from "../screen/ReportIssueScreen";
+// import PdfViewerScreen from "../screen/PdfViwerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -97,6 +98,7 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       <Stack.Screen name="Gift" component={GiftRedeemedHistory} />
       <Stack.Screen name="Caseback" component={CashbackHistory} />
       <Stack.Screen name="Issue" component={ReportIssueScreen} />
+      {/* <Stack.Screen name="Pdfviewer" component={PdfViewerScreen} /> */}
     </Stack.Navigator>
   );
 };

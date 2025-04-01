@@ -8,9 +8,9 @@ const BannerCarousel = () => {
   const [activeSlide, setActiveSlide] = useState(0);
 
   const bannerData = [
-    require("../assets/banner1.jpg"),
-    require("../assets/banner2.jpg"),
-    require("../assets/banner3.jpg"),
+    require("../assets/batabanner1.jpg"),
+    require("../assets/batabanner2.jpg"),
+    // require("../assets/banner3.jpg"),
   ];
 
   return (

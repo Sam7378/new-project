@@ -4,26 +4,70 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  StyleSheet,
   Image,
+  Alert,
+  StyleSheet,
+  FlatList,
 } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Appbar, Card, Divider, Button } from "react-native-paper";
 import { launchImageLibrary } from "react-native-image-picker";
-import Picker from "react-native-picker/picker";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// import Modal from "react-native-modal";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const ReportIssueScreen = ({ navigation }) => {
-  const [selectedIssue, setSelectedIssue] = useState("Point Related");
-  const [shortDesc, setShortDesc] = useState("");
-  const [longDesc, setLongDesc] = useState("");
-  const [imageUri, setImageUri] = useState(null);
+const ReportIssueScreen = ({ navigation, route }) => {
+  const [selectedIssue, setSelectedIssue] = useState(
+    route.params?.selectedIssue || null
+  );
+  const [shortDesc, setShortDesc] = useState(route.params?.shortDesc || "");
+  const [longDesc, setLongDesc] = useState(route.params?.longDesc || "");
+  const [image, setImage] = useState(route.params?.image || null);
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const issueTypes = [
+    "KYC Related",
+    "Point Related",
+    "Application Related",
+    "Product Related",
+    "Qr Code Related",
+    "Bar Code Related",
+    "Others",
+  ];
 
   // Open Image Picker
   const openGallery = () => {
-    launchImageLibrary({ mediaType: "photo" }, (response) => {
-      if (response.assets && response.assets.length > 0) {
-        setImageUri(response.assets[0].uri);
+    const options = { mediaType: "photo", quality: 0.8 };
+    launchImageLibrary(options, (response) => {
+      if (!response.didCancel && !response.errorCode) {
+        setImage(response.assets[0].uri);
       }
     });
+  };
+
+  // Handle Dropdown Selection
+  const handleIssueSelection = (issue) => {
+    setSelectedIssue(issue);
+    setDropdownVisible(false);
+  };
+
+  // Submit Report
+  const handleSubmit = () => {
+    if (!shortDesc || !selectedIssue) {
+      Alert.alert("Error", "Please fill the field");
+      return;
+    }
+    Alert.alert("Success", "Report submitted successfully!", [
+      {
+        text: "OK",
+        onPress: () =>
+          navigation.navigate("Home", {
+            selectedIssue,
+            shortDesc,
+            longDesc,
+            image,
+          }),
+      },
+    ]);
   };
 
   return (
@@ -31,64 +75,109 @@ const ReportIssueScreen = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <MaterialIcons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Report Issue</Text>
+        <Text style={styles.headerTitle}>Report Issue</Text>
       </View>
 
-      {/* Issue Type Dropdown */}
-      <View style={styles.dropdownContainer}>
-        <Picker
-          selectedValue={selectedIssue}
-          onValueChange={(itemValue) => setSelectedIssue(itemValue)}
-          style={styles.picker}
+      {/* Dropdown */}
+      <View style={styles.wrap}>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setDropdownVisible(!isDropdownVisible)}
         >
-          <Picker.Item label="Point Related" value="Point Related" />
-          <Picker.Item label="KYC Related" value="KYC Related" />
-          <Picker.Item
-            label="Application Related"
-            value="Application Related"
+          <Text style={styles.dropdownText}>
+            {selectedIssue || "Appointment Reasion *"}
+          </Text>
+          <Ionicons name="chevron-down" size={20} color="#333" />
+        </TouchableOpacity>
+
+        {isDropdownVisible && (
+          <FlatList
+            data={issueTypes}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.item}
+                onPress={() => {
+                  setSelectedIssue(item);
+                  setDropdownVisible(false);
+                }}
+              >
+                <Text style={styles.dropItem}>{item}</Text>
+              </TouchableOpacity>
+            )}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            showsVerticalScrollIndicator={false}
           />
-        </Picker>
-      </View>
-
-      <View style={styles.divider} />
-
-      {/* Short Description Input */}
-      <TextInput
-        style={styles.shortDesc}
-        placeholder="Enter short description"
-        value={shortDesc}
-        onChangeText={setShortDesc}
-      />
-
-      {/* Long Description Input */}
-      <View style={styles.card}>
-        <TextInput
-          style={styles.longDesc}
-          placeholder="Enter detailed issue description"
-          value={longDesc}
-          onChangeText={setLongDesc}
-          multiline
-        />
-      </View>
-
-      {/* Upload Image Section */}
-      <TouchableOpacity style={styles.uploadCard} onPress={openGallery}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.uploadedImage} />
-        ) : (
-          <>
-            <Ionicons name="camera-outline" size={50} color="gray" />
-            <Text style={styles.uploadText}>Upload the product image</Text>
-          </>
         )}
-      </TouchableOpacity>
 
-      {/* Report Issue Button */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Report Issue</Text>
-      </TouchableOpacity>
+        {/* Dropdown Modal */}
+        {/* <Modal
+        isVisible={isDropdownVisible}
+        onBackdropPress={() => setDropdownVisible(false)}
+        style={styles.modal}
+      >
+        <View style={styles.dropdownContainer}>
+          <FlatList
+            data={issueTypes}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => handleIssueSelection(item)}
+              >
+                <Text style={styles.dropdownItemText}>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </Modal> */}
+
+        <Divider style={{ marginVertical: 15 }} />
+
+        {/* Short Description */}
+        <TextInput
+          placeholder="Short Description *"
+          value={shortDesc}
+          placeholderTextColor={"#000"}
+          onChangeText={setShortDesc}
+          style={styles.input}
+        />
+
+        {/* Long Description */}
+        <Card style={styles.card}>
+          <TextInput
+            placeholder="Long Description"
+            multiline
+            value={longDesc}
+            onChangeText={setLongDesc}
+            style={styles.longDesc}
+            placeholderTextColor={"#000"}
+          />
+        </Card>
+
+        {/* Image Upload */}
+        <TouchableOpacity style={styles.uploadCard} onPress={openGallery}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.uploadedImage} />
+          ) : (
+            <>
+              <Image
+                source={require("../assets/imageup.png")}
+                style={styles.image}
+              />
+              {/* <Ionicons name="camera-outline" size={50} color="gray" /> */}
+              <Text style={styles.uploadText}>Upload the product image</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Submit Button */}
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Report Issue</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -98,60 +187,109 @@ export default ReportIssueScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 15,
+    backgroundColor: "#b71c1c",
   },
   header: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
+
+    padding: 30,
+
+    paddingHorizontal: 15,
   },
-  headerText: {
-    fontSize: 20,
+  headerTitle: {
+    color: "white",
+    fontSize: 18,
     fontWeight: "bold",
-    marginLeft: 16,
+    marginLeft: 10,
   },
-  dropdownContainer: {
-    borderWidth: 1,
+  wrap: {
+    padding: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    backgroundColor: "#ffffff",
+    flex: 1,
+  },
+  dropdownButton: {
+    padding: 15,
+    // borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 10,
+    // borderRadius: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  picker: {
-    height: 50,
+  dropItem: {
+    color: "#000",
   },
-  divider: {
+  separator: {
     height: 1,
     backgroundColor: "#ccc",
-    marginVertical: 10,
+    width: "100%",
   },
-  shortDesc: {
+  item: {
+    padding: 8,
+    // backgroundColor: "#ddd",
+
+    borderRadius: 5,
+  },
+
+  dropdownText: {
+    fontSize: 16,
+    color: "#000",
+  },
+
+  dropdownContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    width: "80%",
+    paddingVertical: 10,
+  },
+  dropdownItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    alignItems: "center",
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
+
+    marginBottom: 20,
+    width: "90%",
+    alignSelf: "center",
   },
   card: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 5,
+    width: "90%",
+    alignSelf: "center",
     padding: 10,
-    marginBottom: 15,
+    marginBottom: 20,
+    backgroundColor: "#fff",
   },
   longDesc: {
-    minHeight: 80,
+    height: 100,
     textAlignVertical: "top",
   },
   uploadCard: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 5,
-    padding: 20,
+    backgroundColor: "#ebf2fb",
+    width: "90%",
+
+    padding: 35,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
+    alignSelf: "center",
+    marginBottom: 30,
+  },
+  image: {
+    width: 40,
+    height: 40,
   },
   uploadText: {
-    color: "gray",
+    color: "#000",
     fontSize: 16,
     marginTop: 5,
   },
@@ -160,15 +298,16 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
   },
-  button: {
-    backgroundColor: "#d32f2f",
+  submitButton: {
+    backgroundColor: "#b71c1c",
     padding: 15,
+    justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "500",
   },
 });

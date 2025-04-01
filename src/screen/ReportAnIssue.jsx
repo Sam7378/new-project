@@ -37,7 +37,7 @@ const ReportAnIssue = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.addButtonCircle}
-        onPress={() => navigation.navigate("BankAccountScreen")}
+        onPress={() => navigation.navigate("Issue")}
       >
         <MaterialIcons name="add" size={40} color="#fff" />
       </TouchableOpacity>
