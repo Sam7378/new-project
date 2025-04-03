@@ -58,7 +58,13 @@ const AccountScreen = ({ setIsLoggedIn }) => {
   // Function to update profile image and emit an event
   const updateProfileImage = async (newImageUri) => {
     try {
+      if (typeof newImageUri !== "string") {
+        throw new Error("Invalid image URI: Must be a string.");
+      }
+
       await AsyncStorage.setItem("profileImage", newImageUri);
+
+      // ✅ Better event handling with React state management (if applicable)
       DeviceEventEmitter.emit("profileUpdated", newImageUri);
     } catch (error) {
       console.error("Error updating profile image:", error);

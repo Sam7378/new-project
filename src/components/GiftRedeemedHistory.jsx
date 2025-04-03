@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+} from "react-native";
 import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -42,7 +49,12 @@ const GiftRedeemedHistory = ({ navigation }) => {
           <Text style={styles.statValue}>0.00</Text>
           <Text style={styles.statLabel}>Lifetime Burns</Text>
         </View>
-        <TouchableOpacity style={styles.redeemButton}>
+        <TouchableOpacity
+          style={styles.redeemButton}
+          onPress={() =>
+            Alert.alert("Error", "Sorry you don't have enough points.")
+          }
+        >
           <Text style={styles.redeemText}>redeem</Text>
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import MenuItem from "../components/MenuItem";
 import ShareModal from "../components/ShareModal";
-import { EventEmitter } from "react-native";
 import { DeviceEventEmitter } from "react-native";
 
 const CustomDrawer = ({ onLogout }) => {
@@ -38,21 +37,28 @@ const CustomDrawer = ({ onLogout }) => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchUserData();
+  useEffect(() => {
+    fetchUserData(); // ✅ Fetch user data once
 
-      const subscription = DeviceEventEmitter.addListener(
-        "profileUpdated",
-        (newImageUri) => {
-          setProfileImage({ uri: newImageUri });
-        }
-      );
+    const subscription = DeviceEventEmitter.addListener(
+      "profileUpdated",
+      (newImageUri) => {
+        setProfileImage({ uri: newImageUri });
+      }
+    );
 
-      return () => subscription.remove();
-    }, [])
-  );
+    return () => {
+      subscription.remove(); // ✅ Cleanup event listener
+    };
+  }, []);
 
+  // const handleLogout = async () => {
+  //   try {
+  //     Alert.alert("success", "Logged out successfully!");
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to logout. Please try again.");
+  //   }
+  // };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -69,29 +75,15 @@ const CustomDrawer = ({ onLogout }) => {
           onPress={() => navigation.navigate("Home")}
         />
         <MenuItem
-          icon="settings"
-          text="Settings"
-          onPress={() => navigation.navigate("Settings")}
+          icon="person"
+          text="Profile"
+          onPress={() => navigation.navigate("Profile")}
+          iconSet="Octicons"
         />
         <MenuItem
           icon="card-giftcard"
-          text="My Reward"
+          text="Gift Catalogue"
           onPress={() => navigation.navigate("Reward")}
-        />
-        <MenuItem
-          icon="support-agent"
-          text="Customer Support"
-          onPress={() => navigation.navigate("Help")}
-        />
-        <MenuItem
-          icon="menu-book"
-          text="User Manual"
-          onPress={() => navigation.navigate("UserManual")}
-        />
-        <MenuItem
-          icon="ondemand-video"
-          text="Videos"
-          onPress={() => navigation.navigate("Videos")}
         />
         <MenuItem
           icon="photo-library"
@@ -100,40 +92,63 @@ const CustomDrawer = ({ onLogout }) => {
         />
         <MenuItem
           icon="share"
-          text="Share App"
+          text="Product Catalogue"
           onPress={() => setModalVisible(true)}
         />
         <MenuItem
-          icon="error-outline"
-          text="Report an Issue"
-          onPress={() => navigation.navigate("ReportIssue")}
+          icon="support-agent"
+          text="Help and Support"
+          onPress={() => navigation.navigate("Help")}
         />
         <MenuItem
           icon="feedback"
           text="Feedback"
           onPress={() => navigation.navigate("Feedback")}
         />
+        {/* <MenuItem
+          icon="menu-book"
+          text="User Manual"
+          onPress={() => navigation.navigate("UserManual")}
+        /> */}
+        <MenuItem
+          icon="ondemand-video"
+          text="Videos"
+          onPress={() => navigation.navigate("Videos")}
+        />
         <MenuItem
           icon="gavel"
-          text="Terms and Conditions"
+          text="Media"
           onPress={() => navigation.navigate("TermsAndConditions")}
         />
-
-        <TouchableOpacity
-          style={[styles.menuItem, styles.logoutButton]}
-          onPress={() =>
-            Alert.alert("Logout", "Are you sure you want to log out?", [
-              { text: "Cancel", style: "cancel" },
-              { text: "Logout", style: "destructive", onPress: onLogout },
-            ])
-          }
-        >
-          <Icon name="logout" size={24} color="white" />
-          <Text style={[styles.menuText, { color: "white", marginLeft: 10 }]}>
-            Logout
-          </Text>
-        </TouchableOpacity>
+        {/* <MenuItem
+          icon="error-outline"
+          text="Report an Issue"
+          onPress={() => navigation.navigate("ReportIssue")}
+        /> */}
       </View>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() =>
+          Alert.alert("Logout", "Are you sure you want to log out?", [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Logout",
+              style: "destructive",
+              onPress: async () => {
+                await handleLogout();
+              },
+            },
+          ])
+        }
+      >
+        <View style={styles.buttonContent}>
+          <Text style={styles.buttonText}>LOG OUT</Text>
+          <Icon name="logout" size={20} color="white" />
+        </View>
+        <Text style={styles.designText}>
+          Designed and developed by Genified
+        </Text>
+      </TouchableOpacity>
 
       <ShareModal
         visible={modalVisible}
@@ -148,13 +163,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     backgroundColor: "#ca000b",
-    height: 150,
+    padding: 30,
     alignItems: "center",
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 25,
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: "white",
@@ -163,11 +179,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
-    marginLeft: 15,
+    marginLeft: 30,
+    marginBottom: 30,
   },
   menuContainer: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 8,
     paddingHorizontal: 20,
   },
   menuItem: {
@@ -177,6 +194,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
+  buttonContainer: { flexDirection: "row", marginTop: "auto" },
   menuText: {
     fontSize: 18,
     fontWeight: "600",
@@ -185,12 +203,30 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: "auto",
-    backgroundColor: "red",
-    paddingVertical: 12,
-    borderRadius: 5,
+    width: "100%",
+    backgroundColor: "#ca000b",
+    paddingVertical: 15,
     alignItems: "center",
-    flexDirection: "row",
     justifyContent: "center",
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "500",
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  designText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "500",
+    marginTop: 10,
+    textAlign: "center",
   },
 });
 

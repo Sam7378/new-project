@@ -12,7 +12,7 @@ const BalanceSection = () => {
       </View>
       <View style={styles.divider}>
         <Text style={styles.balanceText}>Current Month {"\n"}Points</Text>
-        <Text style={styles.balanceText}>0.00</Text>
+        <Text style={styles.balanceText}>0</Text>
       </View>
       <TouchableOpacity
         style={styles.redeemButton}
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   balanceText: {
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: "600",
+    fontSize: 14,
     color: "black",
     textAlign: "center",
   },

@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   addAccountText: {
     position: "absolute",
     bottom: 30,
-    left: 180,
+    left: 160,
     fontSize: 18,
     fontWeight: "bold",
     color: "#c9000a",

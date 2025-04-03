@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,49 +15,96 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import {
   request,
+  check,
   PERMISSIONS,
   RESULTS,
   openSettings,
 } from "react-native-permissions";
+import { AuthContext } from "../context/AuthContext";
 
 const RetailerLoginScreen = () => {
   const navigation = useNavigation();
+  const { login } = useContext(AuthContext);
   const [mobileNumber, setMobileNumber] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [storedUser, setStoredUser] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
 
-  const validateMobile = (number) => /^[0-9]{10}$/.test(number);
+  useEffect(() => {
+    const getStoredUser = async () => {
+      try {
+        const userData = await AsyncStorage.getItem("userDetail");
+        if (userData) {
+          setStoredUser(JSON.parse(userData));
+        }
+      } catch (error) {
+        console.error("Error fetching stored user data:", error);
+      }
+    };
+
+    getStoredUser();
+  }, []);
+
+  const validateMobile = (number) => /^[0-9]{10}$/.test(number.trim());
 
   const handleLogin = async () => {
-    if (!mobileNumber || !name) {
+    const trimmedMobile = mobileNumber.trim();
+    const trimmedUsername = username.trim();
+
+    if (!trimmedMobile || !trimmedUsername) {
       Alert.alert("Error", "Please enter mobile number and name.");
       return;
     }
-    if (!validateMobile(mobileNumber)) {
+
+    if (!validateMobile(trimmedMobile)) {
       Alert.alert("Invalid Number", "Enter a valid 10-digit mobile number.");
       return;
     }
+
     if (!isChecked) {
       Alert.alert("Terms & Conditions", "Please agree to the terms.");
       return;
     }
 
-    await AsyncStorage.setItem("retailerMobile", mobileNumber);
-    await AsyncStorage.setItem("retailerName", name);
-    await AsyncStorage.setItem("userToken", "validToken");
+    try {
+      const storedUserData = await AsyncStorage.getItem("userDetails"); // Corrected key
+      if (!storedUserData) {
+        Alert.alert("Error", "User not found. Please register first.");
+        return;
+      }
 
-    Alert.alert("Success", "Login Successful", [
-      { text: "OK", onPress: requestLocationPermission },
-    ]);
+      const storedUser = JSON.parse(storedUserData);
+
+      if (
+        storedUser.mobileNumber === trimmedMobile &&
+        storedUser.firstName === trimmedUsername
+      ) {
+        await login(trimmedMobile, trimmedUsername); // Call login from AuthContext
+        Alert.alert("Success", "Login Successful", [
+          { text: "OK", onPress: requestLocationPermission },
+        ]);
+      } else {
+        Alert.alert("Error", "Invalid username or mobile number.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   const requestLocationPermission = async () => {
-    const result = await request(
+    const permission =
       Platform.OS === "ios"
         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-    );
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
+    const status = await check(permission);
+    if (status === RESULTS.GRANTED) {
+      navigation.replace("MAIN");
+      return;
+    }
+
+    const result = await request(permission);
     if (result === RESULTS.GRANTED) {
       navigation.replace("MAIN");
     } else if (result === RESULTS.DENIED) {
@@ -92,23 +139,21 @@ const RetailerLoginScreen = () => {
       <Text style={styles.title}>Tell us your mobile number</Text>
       <View style={styles.inputBox}>
         <Text style={styles.label}>Mobile Number</Text>
-
         <TextInput
           style={styles.input}
-          // placeholder="Mobile Number"
           keyboardType="phone-pad"
-          label="Mobile Number"
           value={mobileNumber}
-          onChangeText={setMobileNumber}
+          onChangeText={(text) => setMobileNumber(text)}
         />
       </View>
-      <TextInput
-        label="Name"
-        style={styles.input}
-        // placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
+      <View style={styles.inputBox}>
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+        />
+      </View>
 
       <View style={styles.checkboxContainer}>
         <CheckBox
@@ -159,19 +204,24 @@ const styles = StyleSheet.create({
     marginBottom: 55,
     marginTop: 45,
   },
-  input: {
-    width: "100%",
-    height: 60,
-    borderColor: "#ccc",
+  inputBox: {
     borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 15,
-    marginBottom: 22,
+    borderColor: "gray",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 14,
+    color: "gray",
+  },
+  input: {
+    fontSize: 16,
+    paddingTop: 5,
   },
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-
     marginBottom: 20,
   },
   checkboxText: { marginLeft: 8, fontSize: 18, color: "#555" },
@@ -182,7 +232,7 @@ const styles = StyleSheet.create({
     padding: 17,
     borderRadius: 4,
     alignItems: "center",
-    paddingHorizontal: 50,
+    alignSelf: "center",
   },
   loginText: {
     color: "white",
@@ -192,33 +242,5 @@ const styles = StyleSheet.create({
   },
   rightArrow: {
     marginLeft: 2,
-  },
-  inputBox: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    padding: 8,
-    marginRight: 10,
-  },
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    marginBottom: 15,
-    padding: 5,
-  },
-  label: {
-    position: "absolute",
-    top: -10,
-    left: 10,
-    backgroundColor: "#fff",
-    paddingHorizontal: 5,
-    fontSize: 14,
-    color: "gray",
-  },
-  input: {
-    fontSize: 16,
-    paddingTop: 10,
   },
 });

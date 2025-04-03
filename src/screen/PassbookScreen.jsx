@@ -17,31 +17,31 @@ const PassbookScreen = ({ navigation }) => {
     {
       id: 1,
       image: require("../assets/coin.png"),
-      points: 100,
+      points: "0.00",
       titlePoint: "Earned Points",
     },
     {
       id: 2,
       image: require("../assets/coin.png"),
-      points: 200,
+      points: "0.00",
       titlePoint: "Redeemed Points",
     },
     {
       id: 3,
       image: require("../assets/coin.png"),
-      points: 300,
+      points: "0.00",
       titlePoint: "Balance Points",
     },
     {
       id: 4,
       image: require("../assets/coin.png"),
-      points: 400,
+      points: 0,
       titlePoint: "Current Month Point",
     },
     {
       id: 5,
       image: require("../assets/coin.png"),
-      points: 500,
+      points: 0,
       titlePoint: "Current Quarter Points",
     },
   ];
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   toggleWrap: {
     width: "85%",
-    height: "40%",
+    height: "45%",
     borderWidth: 1,
     borderColor: "red",
     marginLeft: 30,
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   midTitle: {
-    right: 22,
+    left: 18,
   },
   historyTitle: {
     fontSize: 14,

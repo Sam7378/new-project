@@ -33,7 +33,7 @@ const ReportAnIssue = ({ navigation }) => {
           <Ionicons name="arrow-forward" color="#fff" size={24} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.addAccountText}>Add Account</Text>
+      <Text style={styles.addAccountText}>Add Issue</Text>
 
       <TouchableOpacity
         style={styles.addButtonCircle}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   addAccountText: {
     position: "absolute",
     bottom: 30,
-    left: 180,
+    left: 160,
     fontSize: 18,
     fontWeight: "bold",
     color: "#c9000a",

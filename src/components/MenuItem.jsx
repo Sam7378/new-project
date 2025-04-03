@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 const MenuItem = ({ icon, text, onPress }) => {
   return (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <Icon name={icon} size={24} color="#1C45AB" />
+      <Icon name={icon} size={24} color="#6A6A6A" />
       <Text style={styles.menuText}>{text}</Text>
     </TouchableOpacity>
   );
@@ -20,10 +20,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   menuText: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 16,
+    fontFamily: "sans - serif",
+    fontWeight: "500",
     marginLeft: 10,
-    color: "#1C45AB",
+    color: "#ca000b",
   },
 });
 

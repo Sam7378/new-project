@@ -9,7 +9,7 @@ const Header = ({ navigation }) => {
         <Ionicons name="list" size={30} color="#d15560" />
       </TouchableOpacity>
       <Image source={require("../assets/demohead.png")} style={styles.logo} />
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
         <Ionicons name="notifications" size={30} color="#ca000b" />
       </TouchableOpacity>
     </View>

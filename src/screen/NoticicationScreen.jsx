@@ -1,162 +1,115 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
-const NotificationScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const slideAnim = useRef(new Animated.Value(300)).current;
-  const [notifications, setNotifications] = useState([]);
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-  useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-    loadNotifications();
-  }, []);
-
-  // Load notifications from AsyncStorage
-  const loadNotifications = async () => {
-    try {
-      const storedNotifications = await AsyncStorage.getItem("notifications");
-      if (storedNotifications) {
-        setNotifications(JSON.parse(storedNotifications));
-      }
-    } catch (error) {
-      console.error("Error loading notifications:", error);
-    }
-  };
-
-  // Clear all notifications & reset bell icon badge
-  const clearNotifications = async () => {
-    try {
-      await AsyncStorage.removeItem("notifications"); // Remove from storage
-      setNotifications([]); // Clear state
-
-      // Reset bell icon badge
-      if (route.params?.resetBadge) {
-        route.params.resetBadge(); // Call resetBadge from Header
-      }
-    } catch (error) {
-      console.error("Error clearing notifications:", error);
-    }
-  };
-
+const NoticicationScreen = ({ navigation }) => {
   return (
-    <Animated.View
-      style={[styles.container, { transform: [{ translateX: slideAnim }] }]}
-    >
-      {/* Close Button */}
-      <TouchableOpacity
-        style={styles.closeButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Icon name="close" size={24} color="black" />
-      </TouchableOpacity>
-
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Notifications</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={30} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Notification</Text>
       </View>
 
-      {/* Notification List */}
-      {notifications.length > 0 ? (
-        <>
-          <FlatList
-            data={notifications}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ paddingBottom: 80 }} // Prevent overlap with clear button
-            renderItem={({ item }) => (
-              <View style={styles.notificationItem}>
-                <Text style={styles.notificationText}>{item.message}</Text>
-                <Text style={styles.notificationDate}>{item.date}</Text>
-              </View>
-            )}
-          />
+      {/* No Data Placeholder */}
+      <View style={styles.noDataContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color="gray" />
+        <Text style={styles.noDataText}>No Data Found</Text>
+        <Text>Data is empty</Text>
+      </View>
 
-          {/* Bottom Clear Button */}
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={clearNotifications}
-          >
-            <Text style={styles.clearButtonText}>Clear All</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <Text style={styles.noNotifications}>No notifications yet!</Text>
-      )}
-    </Animated.View>
+      {/* Back to Dashboard Button */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Home")}
+        >
+          <Text style={styles.buttonText}>Back to Dashboard</Text>
+          <Ionicons name="arrow-forward" color="#fff" size={24} />
+        </TouchableOpacity>
+      </View>
+      {/* <Text style={styles.addAccountText}>Add Account</Text>
+
+      <TouchableOpacity
+        style={styles.addButtonCircle}
+        onPress={() => navigation.navigate("Issue")}
+      >
+        <MaterialIcons name="add" size={40} color="#fff" />
+      </TouchableOpacity> */}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
+
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    padding: 30,
+    backgroundColor: "#ca000b",
   },
-  title: {
+  headerText: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  clearButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
-    backgroundColor: "red",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  clearButtonText: {
+    marginLeft: 16,
     color: "#fff",
-    fontSize: 16,
+  },
+
+  button: {
+    alignItems: "center",
+    marginTop: 60,
+    padding: 15,
+    backgroundColor: "#808080",
+    width: "70%",
+    alignSelf: "center",
+    borderRadius: 5,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
     fontWeight: "bold",
   },
-  notificationItem: {
-    padding: 15,
-    backgroundColor: "#E8F5E9",
-    marginBottom: 10,
-    borderRadius: 10,
+
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
-  notificationText: {
-    fontSize: 16,
+
+  noDataContainer: {
+    alignItems: "center",
+    marginTop: 100,
+    marginTop: 300,
   },
-  notificationDate: {
-    fontSize: 12,
-    color: "#555",
-    marginTop: 5,
-  },
-  noNotifications: {
-    textAlign: "center",
-    fontSize: 16,
-    marginTop: 50,
-  },
-  closeButton: {
+  noDataText: { fontSize: 20, color: "#000", fontWeight: "bold" },
+  addButtonCircle: {
     position: "absolute",
-    top: 20,
+    bottom: 20,
     right: 20,
-    padding: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#c9000a",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "orange",
+  },
+  addAccountText: {
+    position: "absolute",
+    bottom: 30,
+    left: 180,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#c9000a",
   },
 });
-
-export default NotificationScreen;
+export default NoticicationScreen;
