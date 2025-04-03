@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +13,22 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PassbookScreen = ({ navigation }) => {
   const [viewType, setViewType] = useState("list");
+  const [userData, setUserData] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storeData = await AsyncStorage.getItem("userDetails");
+        if (storeData) {
+          const parseData = JSON.parse(storeData);
+          setUserData(parseData);
+        }
+      } catch (error) {
+        console.log("Error fetching user passbook:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const pointsData = [
     {
@@ -80,7 +97,7 @@ const PassbookScreen = ({ navigation }) => {
         <Text style={styles.headerText}>Passbook</Text>
       </View>
       <View style={styles.userText}>
-        <Text style={styles.userName}>Sam</Text>
+        <Text style={styles.userName}>{userData.firstName || "guest"}</Text>
       </View>
 
       <View style={styles.containerWrap}>

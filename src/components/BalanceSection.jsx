@@ -10,7 +10,8 @@ const BalanceSection = () => {
         <Text style={styles.balanceText}>Balance {"\n"} Points</Text>
         <Text style={styles.balanceText}>0.00</Text>
       </View>
-      <View style={styles.divider}>
+      <View style={styles.divider}></View>
+      <View style={styles.balanceValue}>
         <Text style={styles.balanceText}>Current Month {"\n"}Points</Text>
         <Text style={styles.balanceText}>0</Text>
       </View>
@@ -37,6 +38,8 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginVertical: 15,
     marginHorizontal: 10,
+    borderWidth: 0.4,
+    borderColor: "#000",
   },
   balanceText: {
     fontWeight: "600",
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   redeemText: { color: "#fff", fontWeight: "600" },
+  divider: { width: 0.5, backgroundColor: "gray", height: "100%" },
 });
 
 export default BalanceSection;

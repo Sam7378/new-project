@@ -41,6 +41,7 @@ const AppNavigator = ({ setIsLoggedIn }) => {
         console.log("Checking app status...");
         const firstTime = await AsyncStorage.getItem("firstTimeUser");
         const storedProfile = await AsyncStorage.getItem("profileSelected");
+        const userToken = await AsyncStorage.getItem("userToken");
 
         if (firstTime !== "completed") {
           setInitialRoute("Welcome");

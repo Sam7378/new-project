@@ -39,6 +39,30 @@ const ProductCatalogue = () => {
       image: require("../assets/pro4.png"),
       pdf: require("../assets/bata4.pdf"), // Corrected
     },
+    {
+      id: "5",
+      title: "Sports Collection",
+      image: require("../assets/pro1.png"),
+      pdf: require("../assets/bata1.pdf"), // Corrected
+    },
+    {
+      id: "6",
+      title: "Ladies Collection",
+      image: require("../assets/pro2.png"),
+      pdf: require("../assets/bata2.pdf"), // Corrected
+    },
+    {
+      id: "7",
+      title: "School Collection",
+      image: require("../assets/pro3.png"),
+      pdf: require("../assets/bata3.pdf"), // Corrected
+    },
+    {
+      id: "8",
+      title: "Ladies Branding Collection",
+      image: require("../assets/pro4.png"),
+      pdf: require("../assets/bata4.pdf"), // Corrected
+    },
   ];
 
   // Open the PDF in PdfViewer screen
@@ -72,37 +96,49 @@ const ProductCatalogue = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+          <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Product Catalogue</Text>
       </View>
 
       {/* Product List */}
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContainer}
-      />
+      <View style={styles.wrap}>
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#c9000a" },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
-    backgroundColor: "#f8f8f8",
+    padding: 20,
+    // backgroundColor: "#f8f8f8",
   },
-  headerText: { fontSize: 18, fontWeight: "bold", marginLeft: 10 },
+  wrap: {
+    backgroundColor: "#fff",
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+    color: "#fff",
+  },
   listContainer: { padding: 10 },
   card: {
     flex: 1,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 18,
     overflow: "hidden",
     elevation: 5,
     backgroundColor: "#fff",

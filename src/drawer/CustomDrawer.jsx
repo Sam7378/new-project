@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -16,41 +17,70 @@ import { DeviceEventEmitter } from "react-native";
 
 const CustomDrawer = ({ onLogout }) => {
   const navigation = useNavigation();
-  const [userName, setUserName] = useState("Guest");
+  const [userData, setUserData] = useState("Guest");
+  const [loading, setLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(
     require("../assets/woman.png")
   );
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Function to fetch user data from AsyncStorage
-  const fetchUserData = async () => {
-    try {
-      const storedName = await AsyncStorage.getItem("userName");
-      const storedImage = await AsyncStorage.getItem("profileImage");
-
-      setUserName(storedName || "Guest");
-      if (storedImage) {
-        setProfileImage({ uri: storedImage });
-      }
-    } catch (error) {
-      console.log("Error fetching user data:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchUserData(); // ✅ Fetch user data once
-
-    const subscription = DeviceEventEmitter.addListener(
-      "profileUpdated",
-      (newImageUri) => {
-        setProfileImage({ uri: newImageUri });
+    const fetchUserData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem("userDetails");
+        if (storedData) {
+          const parseData = JSON.parse(storedData);
+          console.log("Stored user data:", parseData);
+          setUserData(parseData);
+        }
+      } catch (error) {
+        console.log("Error fetchin user data.", error);
       }
-    );
-
-    return () => {
-      subscription.remove(); // ✅ Cleanup event listener
+      setLoading(false);
     };
+    fetchUserData();
   }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="red" />;
+  }
+
+  // Function to fetch user data from AsyncStorage
+  // const fetchUserData = async () => {
+  //   try {
+  //     const storedName = await AsyncStorage.getItem("userDetails");
+  //     if (storedName) {
+  //       setUserName(JSON.parse(storedName));
+  //     }
+  //     const storedImage = await AsyncStorage.getItem("profileImage");
+
+  //     if (storedName) {
+  //       setUserName(storedName); // ✅ Correctly set the name
+  //     } else {
+  //       setUserName("Guest"); // Default if no name found
+  //     }
+  //     if (storedImage) {
+  //       setProfileImage({ uri: storedImage });
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching user data:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUserData(); // ✅ Fetch user data once
+
+  //   const subscription = DeviceEventEmitter.addListener(
+  //     "profileUpdated",
+  //     (newImageUri) => {
+  //       setProfileImage({ uri: newImageUri });
+  //     }
+  //   );
+
+  //   return () => {
+  //     subscription.remove(); // ✅ Cleanup event listener
+  //   };
+  // }, []);
 
   // const handleLogout = async () => {
   //   try {
@@ -65,7 +95,24 @@ const CustomDrawer = ({ onLogout }) => {
         <TouchableOpacity>
           <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
-        <Text style={styles.username}>Hello {userName}</Text>
+
+        <View style={{ marginLeft: 20 }}>
+          <Text style={styles.username}>
+            Hello {userData.firstName || "Samrat"}
+          </Text>
+
+          {/* Retailer Account Text */}
+          <Text style={styles.retailer}>Retailer Account</Text>
+
+          {/* KYC Section (Now properly aligned below Retailer Account) */}
+          <View style={styles.kyc}>
+            <Image
+              source={require("../assets/cancel.png")}
+              style={styles.image}
+            />
+            <Text style={styles.kycText}>KYC Status</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.menuContainer}>
@@ -177,10 +224,45 @@ const styles = StyleSheet.create({
   },
   username: {
     color: "white",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    marginLeft: 30,
-    marginBottom: 30,
+    marginLeft: 22,
+    // marginBottom: 30,
+    fontFamily: "sans-serif",
+  },
+  retailer: {
+    fontSize: 14,
+    alignItems: "center",
+    // right: 85,
+    marginBottom: 10,
+    // top: 10,
+    left: 20,
+    color: "#fff",
+    fontWeight: "400",
+    fontFamily: "sans-serif",
+  },
+  kyc: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    width: "70%",
+    // marginTop: 8,
+    left: 20,
+    padding: 4,
+  },
+  kycText: {
+    fontSize: 10,
+    marginLeft: 5,
+    fontWeight: "700",
+    color: "#000",
+    fontFamily: "sans-serif",
+  },
+  image: {
+    height: 10,
+    width: 10,
+    resizeMode: "contain",
   },
   menuContainer: {
     flex: 1,

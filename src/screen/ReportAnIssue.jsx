@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   addAccountText: {
     position: "absolute",
     bottom: 30,
-    left: 160,
+    left: 170,
     fontSize: 18,
     fontWeight: "bold",
     color: "#c9000a",

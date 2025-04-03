@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   submitText: { color: "#fff", fontSize: 25 },
   categoryRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginBottom: 8,
     borderBottomWidth: 1,
     paddingBottom: 8,

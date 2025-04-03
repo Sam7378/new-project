@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import Header from "../components/Header";
 import BannerCarousel from "../components/BannerCarousel";
@@ -6,14 +6,33 @@ import BalanceSection from "../components/BalanceSection";
 import FeatureGrid from "../components/FeatureGrid";
 import DipsComponent from "../components/DipsComponent";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("Sam");
+  const [userData, setUserData] = useState("Sam");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storeData = await AsyncStorage.getItem("userDetails");
+        console.log("fetched home", storeData);
+        if (storeData) {
+          const parseData = JSON.parse(storeData);
+          setUserData(parseData);
+        }
+      } catch (error) {
+        console.log("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
   return (
     <ScrollView>
       <Header navigation={navigation} />
       <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeText}>Welcome {username}</Text>
+        <Text style={styles.welcomeText}>
+          Welcome {userData?.firstName || "sam"}
+        </Text>
         <MaterialIcons
           name="military-tech"
           size={24}

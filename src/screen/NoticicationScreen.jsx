@@ -11,7 +11,12 @@ const NoticicationScreen = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={30} color="#fff" />
+          <Ionicons
+            name="arrow-back"
+            size={30}
+            color="#fff"
+            style={styles.backArrow}
+          />
         </TouchableOpacity>
         <Text style={styles.headerText}>Notification</Text>
       </View>
@@ -57,10 +62,12 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 16,
+    // marginLeft: 10,
     color: "#fff",
   },
-
+  backArrow: {
+    right: 10,
+  },
   button: {
     alignItems: "center",
     marginTop: 60,

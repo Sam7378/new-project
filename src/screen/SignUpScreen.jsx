@@ -70,6 +70,8 @@ const RegistrationScreen = () => {
     try {
       await AsyncStorage.setItem("userDetails", JSON.stringify(form));
       await AsyncStorage.setItem("userMobile", form.mobileNumber); // Store mobile number separately
+      const storeData = await AsyncStorage.getItem("userDetails");
+      console.log("stored Data", JSON.parse(storeData));
       Alert.alert(
         "Success",
         "Congratulations, your account has been successfully created",

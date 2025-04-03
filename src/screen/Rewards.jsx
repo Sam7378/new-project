@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,25 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Rewards = () => {
   const navigation = useNavigation();
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const [userData, setUserData] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storeData = await AsyncStorage.getItem("userDetails");
+        const parseData = JSON.parse(storeData);
+        setUserData(parseData);
+      } catch (error) {
+        console.log("Error fetching user reward:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   // Slide Left Animation
   const startSlideAnimation = () => {
@@ -36,7 +51,7 @@ const Rewards = () => {
 
         {/* User Info */}
         <View style={styles.userInfo}>
-          <Text style={styles.username}>John Doe</Text>
+          <Text style={styles.username}>{userData.firstName || "guest"}</Text>
           <Image source={require("../assets/medal.png")} style={styles.medal} />
         </View>
 

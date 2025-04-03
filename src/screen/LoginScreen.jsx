@@ -20,11 +20,10 @@ import {
   RESULTS,
   openSettings,
 } from "react-native-permissions";
-import { AuthContext } from "../context/AuthContext";
 
 const RetailerLoginScreen = () => {
   const navigation = useNavigation();
-  const { login } = useContext(AuthContext);
+
   const [mobileNumber, setMobileNumber] = useState("");
   const [username, setUsername] = useState("");
   const [storedUser, setStoredUser] = useState(null);

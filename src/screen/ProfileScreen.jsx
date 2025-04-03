@@ -1,163 +1,300 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
+  ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-  // const [userData, setUserData] = useState({});
-  const [userName, setUserName] = useState("Guest");
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(
     require("../assets/woman.png")
   );
-  const [phone, setPhone] = useState("");
-
-  const fetchUserData = async () => {
-    try {
-      const storedName = await AsyncStorage.getItem("userName");
-      const storedImage = await AsyncStorage.getItem("profileImage");
-
-      setUserName(storedName || "Guest");
-      if (storedImage) {
-        setProfileImage({ uri: storedImage });
-      }
-    } catch (error) {
-      console.log("Error fetching user data:", error);
-    }
-  };
+  const navigation = useNavigation();
 
   useEffect(() => {
-    fetchUserData(); // ✅ Fetch data once when component mounts
-
-    const subscription = DeviceEventEmitter.addListener(
-      "profileUpdated",
-      (newImageUri) => {
-        setProfileImage({ uri: newImageUri });
+    const fetchUserData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem("userDetails");
+        if (storedData) {
+          setUserData(JSON.parse(storedData));
+        }
+      } catch (error) {
+        console.log("Error fetching user data:", error);
       }
-    );
+      setLoading(false);
+    };
 
-    return () => subscription.remove(); // ✅ Cleanup listener when unmounting
+    fetchUserData();
   }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="red" />;
+  }
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header Section */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
         <TouchableOpacity>
-          <MaterialIcons
-            name="edit"
-            size={24}
-            color="black"
-            style={styles.iconCircle}
-          />
+          <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
-      </View>
 
-      {/* Profile Section */}
-      <View style={styles.profileSection}>
-        <Image source={profileImage} style={styles.profileImage} />
-        <Text style={styles.username}>Hello {userName}</Text>
-        <TouchableOpacity>
-          <MaterialIcons
-            name="delete"
-            size={24}
-            color="black"
-            style={styles.iconCircle}
-          />
-        </TouchableOpacity>
-      </View>
+        <View style={{ marginLeft: 20, flex: 1 }}>
+          <Text style={styles.username}>
+            Hello {userData?.firstName || "Samrat"}
+          </Text>
+          <Text style={styles.retailer}>Retailer Account</Text>
+        </View>
 
-      {/* Phone Section */}
-      <View style={styles.phoneSection}>
-        <Ionicons name="call" size={24} color="black" />
-        <Text style={styles.phoneText}>{userData.phone}</Text>
-      </View>
-
-      {/* Scrollable User Data Section */}
-      <ScrollView style={styles.detailsSection}>
-        {Object.entries(userData).map(
-          ([key, value]) =>
-            key !== "profileImage" &&
-            key !== "username" &&
-            key !== "phone" && (
-              <View key={key} style={styles.detailRow}>
-                <Text style={styles.detailLabel}>
-                  {key.replace(/_/g, " ")}:
-                </Text>
-                <Text style={styles.detailValue}>{value}</Text>
-              </View>
-            )
-        )}
-      </ScrollView>
-
-      {/* Bottom Section */}
-      <View style={styles.bottomSection}>
-        <View style={styles.card}>
-          <Ionicons
-            name="card"
-            size={24}
-            color="black"
-            style={styles.iconCircle}
-          />
-          <Text style={styles.cardText}>Payment Method</Text>
-          <TouchableOpacity>
-            <Text style={styles.addButton}>+ Add</Text>
+        {/* Edit & Delete Icons */}
+        <View style={styles.iconContainer}>
+          <TouchableOpacity style={styles.iconCircle}>
+            <Feather name="edit" size={24} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconCircle}>
+            <MaterialIcons name="delete" size={24} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Mobile Number Section */}
+      <View style={styles.mobileNumber}>
+        <Feather name="phone-call" size={24} color="#515151" />
+        <Text style={styles.mobText}>{userData?.mobileNumber}</Text>
+      </View>
+
+      {/* Scrollable Section: User Details & Cards */}
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Profile Information */}
+        {userData ? (
+          <View style={styles.infoContainer}>
+            <ProfileField label="First Name" value={userData.firstName} />
+            <ProfileField label="Mobile Number" value={userData.mobileNumber} />
+            <ProfileField label="Address" value={userData.address} />
+            <ProfileField label="City" value={userData.city} />
+            <ProfileField label="State" value={userData.state} />
+            <ProfileField label="Pincode" value={userData.pincode} />
+            <ProfileField
+              label="DOB"
+              value={
+                userData.dob ? new Date(userData.dob).toDateString() : "N/A"
+              }
+            />
+            <ProfileField
+              label="Anniversary"
+              value={
+                userData.anniversary
+                  ? new Date(userData.anniversary).toDateString()
+                  : "N/A"
+              }
+            />
+          </View>
+        ) : (
+          <Text style={styles.noData}>No user data found</Text>
+        )}
+
+        {/* Bottom Card Section */}
+        <View style={styles.cardContainer}>
+          <View style={styles.card}>
+            <View style={styles.cardImageCircle}>
+              <Image
+                source={require("../assets/coin.png")}
+                style={styles.cardImage}
+              />
+            </View>
+            <View>
+              <Text style={styles.cardTitle}>Payment {"\n"} Methods</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Bank")}>
+                <View style={styles.cardTitleImage}>
+                  <Text style={styles.cardSubTitle}>+ Add</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <View style={styles.cardImageCircle}>
+              <Image
+                source={require("../assets/coin.png")}
+                style={styles.cardImage}
+              />
+            </View>
+            <View>
+              <Text style={styles.cardTitle}>Check Passbook</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Passbook")}>
+                <View style={styles.cardTitleImage}>
+                  <Text style={styles.cardSubTitle}>View</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "red" },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  profileSection: { alignItems: "center", marginVertical: 20 },
-  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 10 },
-  userName: { fontSize: 18, fontWeight: "bold" },
-  iconCircle: { padding: 10, backgroundColor: "#eee", borderRadius: 50 },
-  phoneSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 10,
-  },
-  phoneText: { marginLeft: 10, fontSize: 16 },
-  detailsSection: { flex: 1 },
-  detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
-  },
-  detailLabel: { fontWeight: "bold" },
-  detailValue: { color: "#555" },
-  bottomSection: { padding: 15 },
-  card: {
-    backgroundColor: "#f9f9f9",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  cardText: { marginTop: 10, fontSize: 16, fontWeight: "bold" },
-  addButton: { color: "blue", marginTop: 5, fontSize: 16 },
-});
+const ProfileField = ({ label, value }) => (
+  <View style={styles.fieldContainer}>
+    <Text style={styles.label}>{label}</Text>
+    <Text style={styles.value}>{value}</Text>
+    <View style={styles.divider} />
+  </View>
+);
 
 export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
+    backgroundColor: "#ca000b",
+    padding: 50,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  username: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+    fontFamily: "sans-serif",
+  },
+  retailer: {
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "400",
+    fontFamily: "sans-serif",
+  },
+  iconContainer: {
+    // flexDirection: "row",
+    gap: 20,
+  },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    backgroundColor: "white",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+  },
+  mobileNumber: {
+    alignSelf: "center",
+    flexDirection: "row",
+    backgroundColor: "#cccc",
+    width: "100%",
+    justifyContent: "center",
+    padding: 10,
+  },
+  mobText: {
+    fontSize: 16,
+    left: 10,
+    color: "#515151",
+    fontWeight: "500",
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  infoContainer: {
+    backgroundColor: "#fff",
+    padding: 25,
+  },
+  fieldContainer: {
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "600",
+    left: 10,
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    left: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginTop: 8,
+  },
+  noData: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#777",
+    marginTop: 20,
+  },
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 20,
+  },
+  card: {
+    width: "48%",
+    borderRadius: 10,
+    padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    // elevation: 3,
+    borderWidth: 1,
+    borderColor: "red",
+    overflow: "hidden",
+  },
+  cardImageCircle: {
+    width: 50,
+    height: 50,
+    backgroundColor: "white",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    // marginLeft: 10,
+    borderWidth: 1,
+  },
+  cardTitleImage: {
+    backgroundColor: "red",
+    borderRadius: 4,
+    padding: 4,
+    left: 10,
+  },
+  cardImage: {
+    width: 30,
+    height: 30,
+    // marginRight: 10,
+  },
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    left: 10,
+  },
+  cardSubTitle: {
+    fontSize: 12,
+    color: "#fff",
+    left: 10,
+  },
+});
