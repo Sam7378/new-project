@@ -112,7 +112,7 @@ const ProfileScreen = () => {
           <View style={styles.card}>
             <View style={styles.cardImageCircle}>
               <Image
-                source={require("../assets/coin.png")}
+                source={require("../assets/money.png")}
                 style={styles.cardImage}
               />
             </View>
@@ -129,12 +129,12 @@ const ProfileScreen = () => {
           <View style={styles.card}>
             <View style={styles.cardImageCircle}>
               <Image
-                source={require("../assets/coin.png")}
+                source={require("../assets/checkbook.png")}
                 style={styles.cardImage}
               />
             </View>
             <View>
-              <Text style={styles.cardTitle}>Check Passbook</Text>
+              <Text style={styles.cardTitle}>Check {"\n"} Passbook</Text>
               <TouchableOpacity onPress={() => navigation.navigate("Passbook")}>
                 <View style={styles.cardTitleImage}>
                   <Text style={styles.cardSubTitle}>View</Text>
@@ -255,15 +255,15 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    width: "48%",
+    width: "42%",
     borderRadius: 10,
-    padding: 15,
+    padding: 10,
     flexDirection: "row",
     alignItems: "center",
     // elevation: 3,
     borderWidth: 1,
-    borderColor: "red",
-    overflow: "hidden",
+    borderColor: "#ca000b",
+    // overflow: "hidden",
   },
   cardImageCircle: {
     width: 50,
@@ -273,13 +273,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     // marginLeft: 10,
-    borderWidth: 1,
+    borderWidth: 0.4,
   },
   cardTitleImage: {
-    backgroundColor: "red",
+    backgroundColor: "#ca000b",
     borderRadius: 4,
-    padding: 4,
-    left: 10,
+    padding: 3,
+    left: 15,
+    top: 3,
   },
   cardImage: {
     width: 30,
@@ -287,14 +288,15 @@ const styles = StyleSheet.create({
     // marginRight: 10,
   },
   cardTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "bold",
-    color: "#333",
+    color: "#515151",
     left: 10,
+    fontFamily: "sans-serif",
   },
   cardSubTitle: {
-    fontSize: 12,
+    fontSize: 11,
     color: "#fff",
-    left: 10,
+    left: 11,
   },
 });
