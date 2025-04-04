@@ -1,5 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Header = ({ navigation }) => {
@@ -10,7 +11,7 @@ const Header = ({ navigation }) => {
       </TouchableOpacity>
       <Image source={require("../assets/demohead.png")} style={styles.logo} />
       <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-        <Ionicons name="notifications" size={30} color="#ca000b" />
+        <FontAwesome name="bell" size={30} color="#ca000b" />
       </TouchableOpacity>
     </View>
   );

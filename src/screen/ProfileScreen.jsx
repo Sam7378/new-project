@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Feather from "react-native-vector-icons/Feather";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const ProfileScreen = () => {
   const [userData, setUserData] = useState(null);
@@ -21,21 +23,44 @@ const ProfileScreen = () => {
   );
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem("userDetails");
-        if (storedData) {
-          setUserData(JSON.parse(storedData));
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const storedData = await AsyncStorage.getItem("userDetails");
+          if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            setUserData(parsedData);
+            if (parsedData.profileImage) {
+              setProfileImage({ uri: parsedData.profileImage });
+            }
+          }
+        } catch (error) {
+          console.log("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.log("Error fetching user data:", error);
-      }
-      setLoading(false);
-    };
+      };
 
-    fetchUserData();
-  }, []);
+      fetchUserData(); // ✅ CALL IT HERE
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const storedData = await AsyncStorage.getItem("userDetails");
+  //       if (storedData) {
+  //         setUserData(JSON.parse(storedData));
+  //       }
+  //     } catch (error) {
+  //       console.log("Error fetching user data:", error);
+  //     }
+  //     setLoading(false);
+  //   };
+
+  //   fetchUserData();
+  // }, []);
 
   if (loading) {
     return <ActivityIndicator size="large" color="red" />;
@@ -45,6 +70,12 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backWrrow}
+        >
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
         <TouchableOpacity>
           <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
@@ -58,11 +89,17 @@ const ProfileScreen = () => {
 
         {/* Edit & Delete Icons */}
         <View style={styles.iconContainer}>
-          <TouchableOpacity style={styles.iconCircle}>
-            <Feather name="edit" size={24} color="#000" />
+          <TouchableOpacity
+            style={styles.iconCircle}
+            onPress={() => navigation.navigate("Editprofile")}
+          >
+            <Entypo name="edit" size={24} color="#ca000b" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconCircle}>
-            <MaterialIcons name="delete" size={24} color="#000" />
+          <TouchableOpacity
+            style={styles.iconCircle}
+            onPress={() => navigation.navigate("Editprofile")}
+          >
+            <AntDesign name="delete" size={24} color="#ca000b" />
           </TouchableOpacity>
         </View>
       </View>
@@ -169,10 +206,17 @@ const styles = StyleSheet.create({
     padding: 50,
     alignItems: "center",
     paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  backWrrow: {
+    position: "absolute",
+    top: 15,
+    left: 15,
+    zIndex: 10,
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: "white",

@@ -27,6 +27,8 @@ import CashbackHistory from "../components/CashbackHistory";
 import ReportIssueScreen from "../screen/ReportIssueScreen";
 import NotificationScreen from "../screen/NoticicationScreen";
 import ProfileScreen from "../screen/ProfileScreen";
+import EditProfileScreen from "../screen/EditProfileScreen";
+
 // import PdfViewerScreen from "../screen/PdfViwerScreen";
 
 const Stack = createNativeStackNavigator();
@@ -104,6 +106,7 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       {/* <Stack.Screen name="Pdfviewer" component={PdfViewerScreen} /> */}
       <Stack.Screen name="Notification" component={NotificationScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Editprofile" component={EditProfileScreen} />
     </Stack.Navigator>
   );
 };

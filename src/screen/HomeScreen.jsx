@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import Header from "../components/Header";
 import BannerCarousel from "../components/BannerCarousel";
@@ -7,9 +7,10 @@ import FeatureGrid from "../components/FeatureGrid";
 import DipsComponent from "../components/DipsComponent";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../context/UserContext";
 
 const HomeScreen = ({ navigation }) => {
-  const [userData, setUserData] = useState("Sam");
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
       <Header navigation={navigation} />
       <View style={styles.welcomeSection}>
         <Text style={styles.welcomeText}>
-          Welcome {userData?.firstName || "sam"}
+          Welcome {user?.firstName || "Guest"}
         </Text>
         <MaterialIcons
           name="military-tech"

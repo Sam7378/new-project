@@ -37,7 +37,7 @@ const DrawerNavigator = ({ setIsLoggedIn }) => {
       }}
     >
       <Drawer.Screen name="Main" component={BottomTabs} />
-      <Drawer.Screen name="MyStatus" component={MyStatusScreen} />
+      {/* <Drawer.Screen name="MyStatus" component={MyStatusScreen} /> */}
       <Drawer.Screen name="Account" component={AccountScreen} />
     </Drawer.Navigator>
   );

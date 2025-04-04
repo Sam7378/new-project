@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,10 +10,12 @@ import {
   ScrollView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { UserContext } from "../context/UserContext";
 
 const PassbookScreen = ({ navigation }) => {
   const [viewType, setViewType] = useState("list");
-  const [userData, setUserData] = useState("");
+
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,7 +99,7 @@ const PassbookScreen = ({ navigation }) => {
         <Text style={styles.headerText}>Passbook</Text>
       </View>
       <View style={styles.userText}>
-        <Text style={styles.userName}>{userData.firstName || "guest"}</Text>
+        <Text style={styles.userName}>{user.firstName || "guest"}</Text>
       </View>
 
       <View style={styles.containerWrap}>

@@ -158,11 +158,11 @@ const AccountScreen = ({ setIsLoggedIn }) => {
 
       <Animated.View style={[styles.listContainer, animatedStyle]}>
         <View style={styles.card}>
-          <AccountButtons
+          {/* <AccountButtons
             imageSource={require("../assets/user-avatar.png")}
             text="Edit Profile"
             onPress={() => navigation.navigate("EditProfile")}
-          />
+          /> */}
           <AccountButtons
             imageSource={require("../assets/status.png")}
             text="My Status"

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../context/UserContext";
 
 const Rewards = () => {
   const navigation = useNavigation();
   const slideAnim = useRef(new Animated.Value(0)).current;
-  const [userData, setUserData] = useState("");
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,7 +52,7 @@ const Rewards = () => {
 
         {/* User Info */}
         <View style={styles.userInfo}>
-          <Text style={styles.username}>{userData.firstName || "guest"}</Text>
+          <Text style={styles.username}>{user.firstName || "guest"}</Text>
           <Image source={require("../assets/medal.png")} style={styles.medal} />
         </View>
 

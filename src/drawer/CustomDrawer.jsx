@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import MenuItem from "../components/MenuItem";
 import ShareModal from "../components/ShareModal";
 import { DeviceEventEmitter } from "react-native";
+import { UserContext } from "../context/UserContext";
 
 const CustomDrawer = ({ onLogout }) => {
   const navigation = useNavigation();
@@ -23,15 +24,25 @@ const CustomDrawer = ({ onLogout }) => {
     require("../assets/woman.png")
   );
   const [modalVisible, setModalVisible] = useState(false);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const storedData = await AsyncStorage.getItem("userDetails");
+        const storedImage = await AsyncStorage.getItem("profileImage");
         if (storedData) {
           const parseData = JSON.parse(storedData);
           console.log("Stored user data:", parseData);
           setUserData(parseData);
+        } else {
+          setUserData("Guest");
+        }
+
+        if (storedImage) {
+          setProfileImage({ uri: storedImage });
+        } else {
+          setProfileImage(require("../assets/account.png"));
         }
       } catch (error) {
         console.log("Error fetchin user data.", error);
@@ -39,6 +50,15 @@ const CustomDrawer = ({ onLogout }) => {
       setLoading(false);
     };
     fetchUserData();
+    const subscription = DeviceEventEmitter.addListener(
+      "profileUpdated",
+      () => {
+        fetchUserData();
+      }
+    );
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   if (loading) {
@@ -82,23 +102,34 @@ const CustomDrawer = ({ onLogout }) => {
   //   };
   // }, []);
 
-  // const handleLogout = async () => {
-  //   try {
-  //     Alert.alert("success", "Logged out successfully!");
-  //   } catch (error) {
-  //     Alert.alert("Error", "Failed to logout. Please try again.");
-  //   }
-  // };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear(); // Clears all stored user data
+      Alert.alert("Success", "Logged out successfully!");
+      onLogout?.(); // Optional callback
+      navigation.replace("Login"); // Navigate to Login screen or initial screen
+    } catch (error) {
+      Alert.alert("Error", "Failed to logout. Please try again.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <Image source={profileImage} style={styles.profileImage} />
+          <Image
+            source={
+              user?.profileImage
+                ? { uri: user.profileImage }
+                : require("../assets/account.png")
+            }
+            style={styles.profileImage}
+          />
         </TouchableOpacity>
 
         <View style={{ marginLeft: 20 }}>
           <Text style={styles.username}>
-            Hello {userData.firstName || "Samrat"}
+            Hello {user.firstName || "Samrat"}
           </Text>
 
           {/* Retailer Account Text */}
