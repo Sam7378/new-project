@@ -84,7 +84,9 @@ const ProfileScreen = () => {
           <Text style={styles.username}>
             Hello {userData?.firstName || "Samrat"}
           </Text>
-          <Text style={styles.retailer}>Retailer Account</Text>
+          <Text style={styles.retailer}>
+            {userData?.profileSelected || "Guest"}
+          </Text>
         </View>
 
         {/* Edit & Delete Icons */}
@@ -155,10 +157,11 @@ const ProfileScreen = () => {
             </View>
             <View>
               <Text style={styles.cardTitle}>Payment {"\n"} Methods</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Bank")}>
-                <View style={styles.cardTitleImage}>
-                  <Text style={styles.cardSubTitle}>+ Add</Text>
-                </View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Bank")}
+                style={styles.button}
+              >
+                <Text style={styles.cardSubTitle}>+ Add</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -172,10 +175,11 @@ const ProfileScreen = () => {
             </View>
             <View>
               <Text style={styles.cardTitle}>Check {"\n"} Passbook</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Passbook")}>
-                <View style={styles.cardTitleImage}>
-                  <Text style={styles.cardSubTitle}>View</Text>
-                </View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Passbook")}
+                style={styles.button}
+              >
+                <Text style={styles.cardSubTitle}>View</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -298,6 +302,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 20,
   },
+  button: {
+    padding: 5,
+    backgroundColor: "#ca000b",
+    borderRadius: 5,
+    marginTop: 5,
+    marginLeft: 10,
+  },
   card: {
     width: "42%",
     borderRadius: 10,
@@ -319,13 +330,13 @@ const styles = StyleSheet.create({
     // marginLeft: 10,
     borderWidth: 0.4,
   },
-  cardTitleImage: {
-    backgroundColor: "#ca000b",
-    borderRadius: 4,
-    padding: 3,
-    left: 15,
-    top: 3,
-  },
+  // cardTitleImage: {
+  //   backgroundColor: "#ca000b",
+  //   borderRadius: 4,
+  //   padding: 3,
+  //   left: 15,
+  //   top: 3,
+  // },
   cardImage: {
     width: 30,
     height: 30,
@@ -341,6 +352,7 @@ const styles = StyleSheet.create({
   cardSubTitle: {
     fontSize: 11,
     color: "#fff",
-    left: 11,
+
+    alignSelf: "center",
   },
 });

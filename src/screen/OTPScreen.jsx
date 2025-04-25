@@ -11,6 +11,13 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  request,
+  check,
+  PERMISSIONS,
+  RESULTS,
+  openSettings,
+} from "react-native-permissions";
 
 const OTPScreen = () => {
   const navigation = useNavigation();
@@ -53,7 +60,14 @@ const OTPScreen = () => {
       //   "OTP Verified Successfully!",
       //   ToastAndroid.SHORT
       // );
-      Alert.alert("Success", "OTP Verified Successfully!");
+      Alert.alert("Success", "OTP Verified Successfully!", [
+        {
+          text: "OK",
+          onPress: () => {
+            requestLocationPermission();
+          },
+        },
+      ]);
       navigation.navigate("MainApp");
     } else {
       Alert.alert("Error", "Incorrect OTP. Please try again.");
@@ -77,7 +91,40 @@ const OTPScreen = () => {
       inputRefs.current[index - 1]?.focus();
     }
   };
+  const requestLocationPermission = async () => {
+    const permission =
+      Platform.OS === "ios"
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
+    const status = await check(permission);
+    if (status === RESULTS.GRANTED) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainApp" }],
+      });
+      return;
+    }
+
+    const result = await request(permission);
+    if (result === RESULTS.GRANTED) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainApp" }],
+      });
+    } else if (result === RESULTS.DENIED) {
+      Alert.alert("Permission Denied", "Location access is required.");
+    } else if (result === RESULTS.BLOCKED) {
+      Alert.alert(
+        "Permission Blocked",
+        "Please enable location access in settings.",
+        [
+          { text: "Open Settings", onPress: openSettings },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

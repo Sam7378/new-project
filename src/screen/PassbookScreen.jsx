@@ -17,20 +17,20 @@ const PassbookScreen = ({ navigation }) => {
 
   const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const storeData = await AsyncStorage.getItem("userDetails");
-        if (storeData) {
-          const parseData = JSON.parse(storeData);
-          setUserData(parseData);
-        }
-      } catch (error) {
-        console.log("Error fetching user passbook:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const storeData = await AsyncStorage.getItem("userDetails");
+  //       if (storeData) {
+  //         const parseData = JSON.parse(storeData);
+  //         setUserData(parseData);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error fetching user passbook:", error);
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   const pointsData = [
     {
@@ -99,7 +99,7 @@ const PassbookScreen = ({ navigation }) => {
         <Text style={styles.headerText}>Passbook</Text>
       </View>
       <View style={styles.userText}>
-        <Text style={styles.userName}>{user.firstName || "guest"}</Text>
+        <Text style={styles.userName}>{user?.firstName || "guest"}</Text>
       </View>
 
       <View style={styles.containerWrap}>

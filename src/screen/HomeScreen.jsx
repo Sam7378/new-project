@@ -11,22 +11,22 @@ import { UserContext } from "../context/UserContext";
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const storeData = await AsyncStorage.getItem("userDetails");
-        console.log("fetched home", storeData);
-        if (storeData) {
-          const parseData = JSON.parse(storeData);
-          setUserData(parseData);
-        }
-      } catch (error) {
-        console.log("Error fetching user data:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
+  console.log("user", user);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const storeData = await AsyncStorage.getItem("userDetails");
+  //       console.log("fetched home", storeData);
+  //       if (storeData) {
+  //         const parseData = JSON.parse(storeData);
+  //         setUserData(parseData);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error fetching user data:", error);
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
   return (
     <ScrollView>
       <Header navigation={navigation} />

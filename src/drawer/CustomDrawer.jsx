@@ -25,6 +25,10 @@ const CustomDrawer = ({ onLogout }) => {
   );
   const [modalVisible, setModalVisible] = useState(false);
   const { user } = useContext(UserContext);
+  const firstName = user?.firstName || "Guest";
+  const profileImg = user?.profileImage
+    ? { uri: user.profileImage }
+    : require("../assets/user.png");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,35 +106,26 @@ const CustomDrawer = ({ onLogout }) => {
   //   };
   // }, []);
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear(); // Clears all stored user data
-      Alert.alert("Success", "Logged out successfully!");
-      onLogout?.(); // Optional callback
-      navigation.replace("Login"); // Navigate to Login screen or initial screen
-    } catch (error) {
-      Alert.alert("Error", "Failed to logout. Please try again.");
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await AsyncStorage.clear(); // Clears all stored user data
+  //     Alert.alert("Success", "Logged out successfully!");
+  //     onLogout?.(); // Optional callback
+  //     navigation.replace("Login"); // Navigate to Login screen or initial screen
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to logout. Please try again.");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <Image
-            source={
-              user?.profileImage
-                ? { uri: user.profileImage }
-                : require("../assets/account.png")
-            }
-            style={styles.profileImage}
-          />
+          <Image source={profileImg} style={styles.profileImage} />
         </TouchableOpacity>
 
         <View style={{ marginLeft: 20 }}>
-          <Text style={styles.username}>
-            Hello {user.firstName || "Samrat"}
-          </Text>
+          <Text style={styles.username}>Hello {firstName}</Text>
 
           {/* Retailer Account Text */}
           <Text style={styles.retailer}>Retailer Account</Text>
@@ -212,9 +207,7 @@ const CustomDrawer = ({ onLogout }) => {
             {
               text: "Logout",
               style: "destructive",
-              onPress: async () => {
-                await handleLogout();
-              },
+              onPress: onLogout, // ✅ comma instead of semicolon
             },
           ])
         }

@@ -17,18 +17,18 @@ const Rewards = () => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const storeData = await AsyncStorage.getItem("userDetails");
-        const parseData = JSON.parse(storeData);
-        setUserData(parseData);
-      } catch (error) {
-        console.log("Error fetching user reward:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const storeData = await AsyncStorage.getItem("userDetails");
+  //       const parseData = JSON.parse(storeData);
+  //       setUserData(parseData);
+  //     } catch (error) {
+  //       console.log("Error fetching user reward:", error);
+  //     }
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   // Slide Left Animation
   const startSlideAnimation = () => {
@@ -52,7 +52,7 @@ const Rewards = () => {
 
         {/* User Info */}
         <View style={styles.userInfo}>
-          <Text style={styles.username}>{user.firstName || "guest"}</Text>
+          <Text style={styles.username}>{user?.firstName || "guest"}</Text>
           <Image source={require("../assets/medal.png")} style={styles.medal} />
         </View>
 

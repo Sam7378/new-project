@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { UserContext } from "../context/UserContext";
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
@@ -35,6 +36,7 @@ const RegistrationScreen = () => {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [showDobPicker, setShowDobPicker] = useState(false);
   const [showAnniversaryPicker, setShowAnniversaryPicker] = useState(false);
+  const { updateUser } = useContext(UserContext);
 
   const handleChange = (name, value) => setForm({ ...form, [name]: value });
 
@@ -71,6 +73,7 @@ const RegistrationScreen = () => {
       await AsyncStorage.setItem("userDetails", JSON.stringify(form));
       await AsyncStorage.setItem("userMobile", form.mobileNumber); // Store mobile number separately
       const storeData = await AsyncStorage.getItem("userDetails");
+      await updateUser(form);
       console.log("stored Data", JSON.parse(storeData));
       Alert.alert(
         "Success",

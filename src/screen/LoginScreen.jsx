@@ -20,6 +20,7 @@ import {
   RESULTS,
   openSettings,
 } from "react-native-permissions";
+import { UserContext } from "../context/UserContext";
 
 const RetailerLoginScreen = () => {
   const navigation = useNavigation();
@@ -28,6 +29,16 @@ const RetailerLoginScreen = () => {
   const [username, setUsername] = useState("");
   const [storedUser, setStoredUser] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+
+  const { user } = useContext(UserContext); // Assuming you have a UserContext to manage user state
+
+  console.log("Stored User:", storedUser);
+  useEffect(() => {
+    const clearOldTocken = async () => {
+      await AsyncStorage.removeItem("userToken");
+    };
+    clearOldTocken();
+  }, []);
 
   useEffect(() => {
     const getStoredUser = async () => {
@@ -44,12 +55,28 @@ const RetailerLoginScreen = () => {
     getStoredUser();
   }, []);
 
-  const validateMobile = (number) => /^[0-9]{10}$/.test(number.trim());
+  const validateMobile = () => {
+    if (!username.trim() || !mobileNumber.trim()) {
+      Alert.alert("Error", "Please enter mobile number and name.");
+      return false;
+    }
+
+    if (!/^\d{10}$/.test(mobileNumber.trim())) {
+      Alert.alert("Error", "Enter a valid 10-digit mobile number.");
+      return false;
+    }
+
+    if (!isChecked) {
+      Alert.alert("Error", "Please agree to the terms and conditions.");
+      return false;
+    }
+    return true;
+  };
 
   const handleLogin = async () => {
+    if (!validateMobile()) return; // Validate mobile number and username
     const trimmedMobile = mobileNumber.trim();
     const trimmedUsername = username.trim();
-
     if (!trimmedMobile || !trimmedUsername) {
       Alert.alert("Error", "Please enter mobile number and name.");
       return;
@@ -59,26 +86,35 @@ const RetailerLoginScreen = () => {
       Alert.alert("Invalid Number", "Enter a valid 10-digit mobile number.");
       return;
     }
-
     if (!isChecked) {
-      Alert.alert("Terms & Conditions", "Please agree to the terms.");
+      Alert.alert("Term & Conditions", "Please agree to the terms.");
       return;
     }
 
     try {
-      const storedUserData = await AsyncStorage.getItem("userDetails"); // Corrected key
-      if (!storedUserData) {
-        Alert.alert("Error", "User not found. Please register first.");
-        return;
+      let matchedUser = null;
+      if (
+        user?.mobileNumber === trimmedMobile &&
+        user?.firstName === trimmedUsername
+      ) {
+        matchedUser = user;
+      } else if (
+        storedUser?.mobileNumber === trimmedMobile &&
+        storedUser?.firstName === trimmedUsername
+      ) {
+        matchedUser = storedUser;
       }
 
-      const storedUser = JSON.parse(storedUserData);
+      if (matchedUser) {
+        // Generate or retrieve the token (for example, from the matchedUser)
+        const userToken = "some_unique_token_here"; // Replace with your actual token retrieval logic
 
-      if (
-        storedUser.mobileNumber === trimmedMobile &&
-        storedUser.firstName === trimmedUsername
-      ) {
-        await login(trimmedMobile, trimmedUsername); // Call login from AuthContext
+        // Store the token in AsyncStorage
+        await AsyncStorage.setItem("userToken", userToken);
+        console.log("Token stored:", userToken);
+
+        navigation.navigate("OtpScreen", { mobileNumber: trimmedMobile });
+
         Alert.alert("Success", "Login Successful", [
           { text: "OK", onPress: requestLocationPermission },
         ]);
@@ -99,13 +135,13 @@ const RetailerLoginScreen = () => {
 
     const status = await check(permission);
     if (status === RESULTS.GRANTED) {
-      navigation.replace("MAIN");
+      navigation.replace("MainApp");
       return;
     }
 
     const result = await request(permission);
     if (result === RESULTS.GRANTED) {
-      navigation.replace("MAIN");
+      navigation.replace("MainApp");
     } else if (result === RESULTS.DENIED) {
       Alert.alert("Permission Denied", "Location access is required.");
     } else if (result === RESULTS.BLOCKED) {
@@ -128,7 +164,7 @@ const RetailerLoginScreen = () => {
           style={styles.headerImage}
         />
         <TouchableOpacity
-          onPress={() => navigation.navigate("SIGNUP")}
+          onPress={() => navigation.navigate("Signup")}
           style={styles.registerButton}
         >
           <Text style={styles.registerText}>Register</Text>
@@ -136,11 +172,14 @@ const RetailerLoginScreen = () => {
       </View>
 
       <Text style={styles.title}>Tell us your mobile number</Text>
+
       <View style={styles.inputBox}>
-        <Text style={styles.label}>Mobile Number</Text>
+        <Text style={styles.label}>Mobile No</Text>
         <TextInput
-          style={styles.input}
-          keyboardType="phone-pad"
+          // style={styles.input}
+          keyboardType="numeric"
+          maxLength={10}
+          placeholder="Enter Mobile Number"
           value={mobileNumber}
           onChangeText={(text) => setMobileNumber(text)}
         />
@@ -148,7 +187,9 @@ const RetailerLoginScreen = () => {
       <View style={styles.inputBox}>
         <Text style={styles.label}>Name</Text>
         <TextInput
-          style={styles.input}
+          // style={styles.input}
+
+          placeholder="Enter Name"
           value={username}
           onChangeText={(text) => setUsername(text)}
         />
@@ -167,79 +208,220 @@ const RetailerLoginScreen = () => {
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>Login</Text>
-        <Icon
-          style={styles.rightArrow}
-          name="arrowright"
-          size={22}
-          color="white"
-        />
+        <Icon name="arrowright" size={22} color="white" style={styles.arrow} />
       </TouchableOpacity>
     </View>
+
+    // <View style={styles.container}>
+    //   <View style={styles.header}>
+    //     <Image
+    //       source={require("../assets/demohead.png")}
+    //       style={styles.headerImage}
+    //     />
+    //     <TouchableOpacity
+    //       onPress={() => navigation.navigate("SIGNUP")}
+    //       style={styles.registerButton}
+    //     >
+    //       <Text style={styles.registerText}>Register</Text>
+    //     </TouchableOpacity>
+    //   </View>
+
+    //   <Text style={styles.title}>Tell us your mobile number</Text>
+    //   <View style={styles.inputBox}>
+    //     <Text style={styles.label}>Mobile Number</Text>
+    //     <TextInput
+    //       style={styles.input}
+    //       keyboardType="phone-pad"
+    //       value={mobileNumber}
+    //       onChangeText={(text) => setMobileNumber(text)}
+    //     />
+    //   </View>
+    //   <View style={styles.inputBox}>
+    //     <Text style={styles.label}>Name</Text>
+    //     <TextInput
+    //       style={styles.input}
+    //       value={username}
+    //       onChangeText={(text) => setUsername(text)}
+    //     />
+    //   </View>
+
+    //   <View style={styles.checkboxContainer}>
+    //     <CheckBox
+    //       isChecked={isChecked}
+    //       onClick={() => setIsChecked(!isChecked)}
+    //       checkBoxColor="red"
+    //     />
+    //     <Text style={styles.checkboxText}>
+    //       I agree to the Terms & Conditions
+    //     </Text>
+    //   </View>
+
+    //   <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+    //     <Text style={styles.loginText}>Login</Text>
+    //     <Icon
+    //       style={styles.rightArrow}
+    //       name="arrowright"
+    //       size={22}
+    //       color="white"
+    //     />
+    //   </TouchableOpacity>
+    // </View>
   );
 };
 
 export default RetailerLoginScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  headerImage: { width: 120, height: 50, resizeMode: "contain" },
-  registerButton: {
-    backgroundColor: "#171717",
-    paddingVertical: 12,
-    borderRadius: 5,
-    paddingHorizontal: 20,
+  headerImage: {
+    width: 120,
+    height: 50,
+    resizeMode: "contain",
   },
-  registerText: { fontSize: 18, color: "#ffffff", fontWeight: "bold" },
+  registerText: {
+    fontSize: 18,
+    color: "#F7F9FA",
+    fontWeight: "bold",
+  },
+  registerButton: {
+    backgroundColor: "#2C2C2C",
+    height: 50,
+    width: "30%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
   title: {
-    fontSize: 35,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#171717",
-    marginBottom: 55,
+    marginBottom: 45,
     marginTop: 45,
   },
-  inputBox: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 14,
-    color: "gray",
-  },
-  input: {
-    fontSize: 16,
-    paddingTop: 5,
-  },
+
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 25,
+    marginTop: 18,
   },
-  checkboxText: { marginLeft: 8, fontSize: 18, color: "#555" },
+  checkboxText: {
+    marginLeft: 8,
+    fontSize: 18,
+    color: "#555",
+  },
   loginButton: {
     flexDirection: "row",
-    backgroundColor: "#c91212",
-    width: "60%",
-    padding: 17,
-    borderRadius: 4,
+    backgroundColor: "#c9202c",
+    padding: 15,
+    borderRadius: 5,
     alignItems: "center",
-    alignSelf: "center",
+
+    marginRight: "35%",
   },
   loginText: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+    marginLeft: "35%",
+  },
+  inputBox: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    padding: 8,
     marginRight: 10,
+    marginBottom: 20,
   },
-  rightArrow: {
-    marginLeft: 2,
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    marginBottom: 15,
+    padding: 5,
   },
+  label: {
+    position: "absolute",
+    top: -10,
+    left: 10,
+    backgroundColor: "#fff",
+    paddingHorizontal: 5,
+    fontSize: 18,
+    color: "gray",
+  },
+  arrow: {
+    marginLeft: 15,
+  },
+
+  // container: { flex: 1, backgroundColor: "#fff", padding: 20 },
+  // header: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "space-between",
+  //   marginBottom: 20,
+  // },
+  // headerImage: { width: 120, height: 50, resizeMode: "contain" },
+  // registerButton: {
+  //   backgroundColor: "#171717",
+  //   paddingVertical: 12,
+  //   borderRadius: 5,
+  //   paddingHorizontal: 20,
+  // },
+  // registerText: { fontSize: 18, color: "#ffffff", fontWeight: "bold" },
+  // title: {
+  //   fontSize: 35,
+  //   fontWeight: "bold",
+  //   color: "#171717",
+  //   marginBottom: 55,
+  //   marginTop: 45,
+  // },
+  // inputBox: {
+  //   borderWidth: 1,
+  //   borderColor: "gray",
+  //   borderRadius: 5,
+  //   padding: 10,
+  //   marginBottom: 15,
+  // },
+  // label: {
+  //   fontSize: 14,
+  //   color: "gray",
+  // },
+  // input: {
+  //   fontSize: 16,
+  //   paddingTop: 5,
+  // },
+  // checkboxContainer: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   marginBottom: 20,
+  // },
+  // checkboxText: { marginLeft: 8, fontSize: 18, color: "#555" },
+  // loginButton: {
+  //   flexDirection: "row",
+  //   backgroundColor: "#c91212",
+  //   width: "60%",
+  //   padding: 17,
+  //   borderRadius: 4,
+  //   alignItems: "center",
+  //   alignSelf: "center",
+  // },
+  // loginText: {
+  //   color: "white",
+  //   fontSize: 18,
+  //   fontWeight: "bold",
+  //   marginRight: 10,
+  // },
+  // rightArrow: {
+  //   marginLeft: 2,
+  // },
 });
