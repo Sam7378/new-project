@@ -8,9 +8,12 @@ import {
   StyleSheet,
   Linking,
   Animated,
+  Dimensions,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
+
+const { width, height } = Dimensions.get("window");
 
 const CampaignModal = ({ visible, onClose, campaignData }) => {
   const navigation = useNavigation();
@@ -34,27 +37,28 @@ const CampaignModal = ({ visible, onClose, campaignData }) => {
         <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
           {/* Close Button */}
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Entypo name="cross" size={25} color="white" />
+            <Entypo name="cross" size={24} color="white" />
           </TouchableOpacity>
 
-          {/* Dynamic Title */}
+          {/* Title */}
           <Text style={styles.title}>{campaignData?.title || "Campaign"}</Text>
 
-          {/* Dynamic Image */}
+          {/* Image */}
           {campaignData?.image && (
             <Image
-              source={require("../assets/banner1.jpg")}
+              source={require("../assets/promo.png")}
               style={styles.image}
+              resizeMode="contain"
             />
           )}
 
-          {/* Video Button (Opens Dynamic Video URL) */}
+          {/* Video Button */}
           {campaignData?.videoUrl && (
             <TouchableOpacity
               style={styles.videoButton}
               onPress={() => Linking.openURL(campaignData.videoUrl)}
             >
-              <Text style={styles.videoButtonText}> VIDEO</Text>
+              <Text style={styles.videoButtonText}>VIDEO</Text>
             </TouchableOpacity>
           )}
 
@@ -62,7 +66,7 @@ const CampaignModal = ({ visible, onClose, campaignData }) => {
           <TouchableOpacity
             style={styles.knowMoreButton}
             onPress={() => {
-              onClose(); // Close modal first
+              // onClose();
               navigation.navigate("CampaignDetails", {
                 campaign: campaignData,
               });
@@ -86,56 +90,58 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    width: 350,
+    width: width * 0.9,
     backgroundColor: "white",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: "center",
-    elevation: 5,
   },
   closeButton: {
     position: "absolute",
-    left: 325,
-    bottom: 420,
-    backgroundColor: "red",
-    borderRadius: 10,
+    right: 0.00005,
+
+    backgroundColor: "#ca000b",
+    borderRadius: 20,
     padding: 5,
+    zIndex: 10,
   },
   title: {
+    right: 10,
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 15,
     color: "black",
+    textAlign: "center",
   },
   image: {
-    width: 250,
-    height: 250,
-    marginBottom: 10,
+    width: width * 0.6,
+    height: height * 0.3,
+    marginBottom: 20,
     borderRadius: 8,
   },
   videoButton: {
-    backgroundColor: "#FF0000",
-    padding: 10,
+    backgroundColor: "#f60067",
+    paddingVertical: 12,
     borderRadius: 5,
-    marginBottom: 10,
-    width: 300,
+    width: "100%",
     alignItems: "center",
+    marginBottom: 10,
   },
   videoButtonText: {
     color: "white",
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
   },
   knowMoreButton: {
-    padding: 10,
-    backgroundColor: "blue",
+    backgroundColor: "#2c2c2c",
+    paddingVertical: 12,
     borderRadius: 5,
-    width: 300,
+    width: "100%",
     alignItems: "center",
   },
   knowMoreText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

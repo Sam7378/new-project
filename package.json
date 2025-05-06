@@ -25,7 +25,6 @@
     "metro-react-native-babel-preset": "^0.77.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
-    "react-native-blob-util": "^0.19.11",
     "react-native-camera": "^4.2.1",
     "react-native-check-box": "^2.1.7",
     "react-native-date-picker": "^4.4.2",

@@ -7,7 +7,6 @@ import {
   Alert,
   Image,
   StyleSheet,
-  ToastAndroid,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";

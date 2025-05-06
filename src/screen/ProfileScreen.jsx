@@ -7,11 +7,17 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Alert,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Feather from "react-native-vector-icons/Feather";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 
@@ -19,8 +25,9 @@ const ProfileScreen = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(
-    require("../assets/woman.png")
+    require("../assets/user.png")
   );
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -42,7 +49,7 @@ const ProfileScreen = () => {
         }
       };
 
-      fetchUserData(); // ✅ CALL IT HERE
+      fetchUserData();
     }, [])
   );
 
@@ -68,6 +75,23 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
+      {modalVisible && (
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}
+            style={styles.modalTouchArea}
+          >
+            <View style={styles.popupContainer}>
+              <Image
+                source={profileImage}
+                style={styles.enlargedImage}
+                resizeMethod="contain"
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -76,7 +100,11 @@ const ProfileScreen = () => {
         >
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={styles.profileImageContainer}
+        >
           <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
 
@@ -85,7 +113,7 @@ const ProfileScreen = () => {
             Hello {userData?.firstName || "Samrat"}
           </Text>
           <Text style={styles.retailer}>
-            {userData?.profileSelected || "Guest"}
+            {userData?.profileSelected || "Retailer Account"}
           </Text>
         </View>
 
@@ -99,7 +127,48 @@ const ProfileScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconCircle}
-            onPress={() => navigation.navigate("Editprofile")}
+            onPress={() => {
+              Alert.alert(
+                "Delete Account",
+                "Are you sure you want to delete your account?",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancelled"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "OK",
+                    onPress: async () => {
+                      try {
+                        await AsyncStorage.clear();
+                        BackHandler.addEventListener(
+                          "hardwareBackPress",
+                          () => true
+                        );
+                        Alert.alert(
+                          "Account Deleted",
+                          "Your account has been deleted successfully."
+                        );
+
+                        navigation.dispatch(
+                          CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: "Retailer" }],
+                          })
+                        );
+                      } catch (error) {
+                        Alert.alert(
+                          "Error",
+                          "Failed to delete account. Please try again later."
+                        );
+                      }
+                    },
+                  },
+                ],
+                { cancelable: true }
+              );
+            }}
           >
             <AntDesign name="delete" size={24} color="#ca000b" />
           </TouchableOpacity>
@@ -123,10 +192,15 @@ const ProfileScreen = () => {
           <View style={styles.infoContainer}>
             <ProfileField label="First Name" value={userData.firstName} />
             <ProfileField label="Mobile Number" value={userData.mobileNumber} />
+            <ProfileField label="formId" value={userData.formId} />
+            <ProfileField label="ownerName" value={userData.ownerName} />
             <ProfileField label="Address" value={userData.address} />
             <ProfileField label="City" value={userData.city} />
             <ProfileField label="State" value={userData.state} />
             <ProfileField label="Pincode" value={userData.pincode} />
+            <ProfileField label="pan" value={userData.pan} />
+            <ProfileField label="aadhaar" value={userData.aadhaar} />
+
             <ProfileField
               label="DOB"
               value={
@@ -218,12 +292,48 @@ const styles = StyleSheet.create({
     left: 15,
     zIndex: 10,
   },
+  profileImageContainer: {
+    marginLeft: 10,
+  },
   profileImage: {
     width: 90,
     height: 90,
-    borderRadius: 50,
+    borderRadius: 45,
     borderWidth: 2,
     borderColor: "white",
+    backgroundColor: "#ffffff",
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  modalTouchArea: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  popupContainer: {
+    backgroundColor: "#fff",
+    padding: 0.4,
+    borderRadius: 10,
+  },
+  enlargedImage: {
+    width: 300,
+    height: 300,
+    borderRadius: 10,
+  },
+  modalContent: {
+    width: "90%",
+    height: "70%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   username: {
     color: "white",

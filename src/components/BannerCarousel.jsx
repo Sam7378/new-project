@@ -21,7 +21,7 @@ const BannerCarousel = () => {
           <Image source={item} style={styles.bannerImage} />
         )}
         sliderWidth={width}
-        itemWidth={width * 0.9}
+        itemWidth={width * 0.95}
         onSnapToItem={setActiveSlide}
       />
       <View style={styles.radioButtonContainer}>
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
   },
-  bannerImage: { width: width * 0.9, height: 150, borderRadius: 8 },
+  bannerImage: { width: width * 0.95, height: 150, borderRadius: 8 },
   radioButtonContainer: {
     position: "absolute",
     bottom: 10,

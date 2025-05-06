@@ -79,7 +79,7 @@ const AccountScreen = ({ setIsLoggedIn }) => {
       return;
     }
 
-    const options = { mediaType: "photo", quality: 1 }; // Defined options
+    const options = { mediaType: "photo", quality: 1 };
 
     launchCamera(options, async (response) => {
       if (response.didCancel) {

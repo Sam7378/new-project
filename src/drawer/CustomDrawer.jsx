@@ -120,9 +120,7 @@ const CustomDrawer = ({ onLogout }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Image source={profileImg} style={styles.profileImage} />
-        </TouchableOpacity>
+        <Image source={profileImg} style={styles.profileImage} />
 
         <View style={{ marginLeft: 20 }}>
           <Text style={styles.username}>Hello {firstName}</Text>
@@ -137,6 +135,9 @@ const CustomDrawer = ({ onLogout }) => {
               style={styles.image}
             />
             <Text style={styles.kycText}>KYC Status</Text>
+          </View>
+          <View style={styles.version}>
+            <Text style={styles.versionText}>Version : 9.0.4</Text>
           </View>
         </View>
       </View>
@@ -164,9 +165,9 @@ const CustomDrawer = ({ onLogout }) => {
           onPress={() => navigation.navigate("Gallery")}
         />
         <MenuItem
-          icon="share"
+          icon="view-compact"
           text="Product Catalogue"
-          onPress={() => setModalVisible(true)}
+          onPress={() => navigation.navigate("ProductCatalogue")}
         />
         <MenuItem
           icon="support-agent"
@@ -184,14 +185,14 @@ const CustomDrawer = ({ onLogout }) => {
           onPress={() => navigation.navigate("UserManual")}
         /> */}
         <MenuItem
-          icon="ondemand-video"
+          icon="smart-display"
           text="Videos"
           onPress={() => navigation.navigate("Videos")}
         />
         <MenuItem
-          icon="gavel"
+          icon="sensor-window"
           text="Media"
-          onPress={() => navigation.navigate("TermsAndConditions")}
+          onPress={() => navigation.navigate("Media")}
         />
         {/* <MenuItem
           icon="error-outline"
@@ -245,12 +246,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 2,
     borderColor: "white",
+    backgroundColor: "#ffffff",
   },
   username: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-    marginLeft: 22,
+    marginLeft: 16,
     // marginBottom: 30,
     fontFamily: "sans-serif",
   },
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
     // right: 85,
     marginBottom: 10,
     // top: 10,
-    left: 20,
+    left: 15,
     color: "#fff",
     fontWeight: "400",
     fontFamily: "sans-serif",
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "70%",
     // marginTop: 8,
-    left: 20,
+    left: 15,
     padding: 4,
   },
   kycText: {
@@ -287,6 +289,17 @@ const styles = StyleSheet.create({
     height: 10,
     width: 10,
     resizeMode: "contain",
+  },
+  version: {
+    top: 25,
+    left: 70,
+  },
+  versionText: {
+    fontSize: 12.5,
+    color: "#fff",
+    // marginTop: 10,
+    fontWeight: "200",
+    fontFamily: "sans-serif",
   },
   menuContainer: {
     flex: 1,

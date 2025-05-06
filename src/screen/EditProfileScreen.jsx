@@ -2,6 +2,8 @@ import {
   Alert,
   DeviceEventEmitter,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -146,81 +148,96 @@ const EditProfileScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backArrow}
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backArrow}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Edit Profile</Text>
+          <View style={styles.wrapPhoto}>
+            <Image
+              source={profileImage || require("../assets/user.png")}
+              style={styles.profileImage}
+            />
+            <TouchableOpacity
+              style={styles.profileContainer}
+              onPress={pickImage}
+            >
+              <View style={styles.changePhoto}>
+                <Text style={styles.changeText}>Change Profile Picture</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.form}>
+          {renderInput("First Name", "firstName")}
+          {renderInput("Mobile Number", "mobileNumber", "numeric")}
+          {renderInput("Address", "address")}
+          {renderInput("City", "city")}
+          {renderInput("State", "state")}
+          {renderInput("Pincode", "pincode", "numeric")}
+          {renderInput("Aadhar Number", "aadhar", "numeric")}
+
+          {renderGenderDropdown()}
+
+          {/* DOB Picker */}
+          <TouchableOpacity onPress={() => setShowDOBPicker(true)}>
+            <Text style={styles.label}>DOB</Text>
+            <Text style={styles.input}>
+              {formData.dob ? new Date(formData.dob).toDateString() : "Select"}
+            </Text>
+          </TouchableOpacity>
+          {showDOBPicker && (
+            <DatePicker
+              date={formData.dob ? new Date(formData.dob) : new Date()}
+              mode="date"
+              onDateChange={(date) => handleChange("dob", date.toISOString())}
+              onCancel={() => setShowDOBPicker(false)}
+              onConfirm={() => setShowDOBPicker(false)}
+            />
+          )}
+
+          {/* Anniversary Picker */}
+          <TouchableOpacity onPress={() => setShowAnniversaryPicker(true)}>
+            <Text style={styles.label}>Anniversary</Text>
+            <Text style={styles.input}>
+              {formData.anniversary
+                ? new Date(formData.anniversary).toDateString()
+                : "Select"}
+            </Text>
+          </TouchableOpacity>
+          {showAnniversaryPicker && (
+            <DatePicker
+              date={
+                formData.anniversary
+                  ? new Date(formData.anniversary)
+                  : new Date()
+              }
+              mode="date"
+              onDateChange={(date) =>
+                handleChange("anniversary", date.toISOString())
+              }
+              onCancel={() => setShowAnniversaryPicker(false)}
+              onConfirm={() => setShowAnniversaryPicker(false)}
+            />
+          )}
+        </ScrollView>
+
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>
+            Update Profile
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>Edit Profile</Text>
       </View>
-
-      <TouchableOpacity style={styles.profileContainer} onPress={pickImage}>
-        <Image
-          source={profileImage || require("../assets/woman.png")}
-          style={styles.profileImage}
-        />
-        <Text style={styles.changePhoto}>Change Profile Picture</Text>
-      </TouchableOpacity>
-
-      <ScrollView contentContainerStyle={styles.form}>
-        {renderInput("First Name", "firstName")}
-        {renderInput("Mobile Number", "mobileNumber", "numeric")}
-        {renderInput("Address", "address")}
-        {renderInput("City", "city")}
-        {renderInput("State", "state")}
-        {renderInput("Pincode", "pincode", "numeric")}
-        {renderInput("Aadhar Number", "aadhar", "numeric")}
-
-        {renderGenderDropdown()}
-
-        {/* DOB Picker */}
-        <TouchableOpacity onPress={() => setShowDOBPicker(true)}>
-          <Text style={styles.label}>DOB</Text>
-          <Text style={styles.input}>
-            {formData.dob ? new Date(formData.dob).toDateString() : "Select"}
-          </Text>
-        </TouchableOpacity>
-        {showDOBPicker && (
-          <DatePicker
-            date={formData.dob ? new Date(formData.dob) : new Date()}
-            mode="date"
-            onDateChange={(date) => handleChange("dob", date.toISOString())}
-            onCancel={() => setShowDOBPicker(false)}
-            onConfirm={() => setShowDOBPicker(false)}
-          />
-        )}
-
-        {/* Anniversary Picker */}
-        <TouchableOpacity onPress={() => setShowAnniversaryPicker(true)}>
-          <Text style={styles.label}>Anniversary</Text>
-          <Text style={styles.input}>
-            {formData.anniversary
-              ? new Date(formData.anniversary).toDateString()
-              : "Select"}
-          </Text>
-        </TouchableOpacity>
-        {showAnniversaryPicker && (
-          <DatePicker
-            date={
-              formData.anniversary ? new Date(formData.anniversary) : new Date()
-            }
-            mode="date"
-            onDateChange={(date) =>
-              handleChange("anniversary", date.toISOString())
-            }
-            onCancel={() => setShowAnniversaryPicker(false)}
-            onConfirm={() => setShowAnniversaryPicker(false)}
-          />
-        )}
-      </ScrollView>
-
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={{ color: "#fff", fontWeight: "600" }}>Update Profile</Text>
-      </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -253,18 +270,31 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: "center",
     marginVertical: 15,
+    flexDirection: "row",
   },
   profileImage: {
     width: 90,
     height: 90,
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: "#ca000b",
+
+    borderColor: "white",
+    backgroundColor: "#ffffff",
+  },
+  wrapPhoto: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   changePhoto: {
+    backgroundColor: "#fff",
+    left: 40,
+    padding: 15,
+    borderRadius: 50,
+  },
+  changeText: {
     color: "#ca000b",
-    marginTop: 10,
-    fontSize: 12,
+    alignItems: "center",
+    fontSize: 15,
     fontWeight: "500",
   },
   form: {

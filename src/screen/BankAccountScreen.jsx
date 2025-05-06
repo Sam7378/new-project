@@ -26,7 +26,7 @@ const BankAccountScreen = () => {
           <View style={styles.section}>
             <View style={styles.circle}>
               <Image
-                source={require("../assets/bank.png")} // Replace with actual image
+                source={require("../assets/bank.png")}
                 style={styles.icon}
               />
             </View>

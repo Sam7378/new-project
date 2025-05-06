@@ -19,55 +19,55 @@ const ProductCatalogue = () => {
       id: "1",
       title: "Sports Collection",
       image: require("../assets/pro1.png"),
-      pdf: require("../assets/bata1.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata1.pdf"), // Corrected
     },
     {
       id: "2",
       title: "Ladies Collection",
       image: require("../assets/pro2.png"),
-      pdf: require("../assets/bata2.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata2.pdf"), // Corrected
     },
     {
       id: "3",
       title: "School Collection",
       image: require("../assets/pro3.png"),
-      pdf: require("../assets/bata3.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata3.pdf"), // Corrected
     },
     {
       id: "4",
       title: "Ladies Branding Collection",
       image: require("../assets/pro4.png"),
-      pdf: require("../assets/bata4.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata4.pdf"), // Corrected
     },
     {
       id: "5",
       title: "Sports Collection",
       image: require("../assets/pro1.png"),
-      pdf: require("../assets/bata1.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata1.pdf"), // Corrected
     },
     {
       id: "6",
       title: "Ladies Collection",
       image: require("../assets/pro2.png"),
-      pdf: require("../assets/bata2.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata2.pdf"), // Corrected
     },
     {
       id: "7",
       title: "School Collection",
       image: require("../assets/pro3.png"),
-      pdf: require("../assets/bata3.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata3.pdf"), // Corrected
     },
     {
       id: "8",
       title: "Ladies Branding Collection",
       image: require("../assets/pro4.png"),
-      pdf: require("../assets/bata4.pdf"), // Corrected
+      pdf: require("../assets/pdfs/bata4.pdf"), // Corrected
     },
   ];
 
   // Open the PDF in PdfViewer screen
   const openPdfScreen = (pdf) => {
-    navigation.navigate("Pdfviewer", { pdfPath: pdf });
+    navigation.navigate("PdfViewer", { pdf });
   };
 
   const renderItem = ({ item }) => (
@@ -108,7 +108,8 @@ const ProductCatalogue = () => {
           keyExtractor={(item) => item.id}
           numColumns={2}
           renderItem={renderItem}
-          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ ...styles.listContainer, flexGrow: 1 }}
         />
       </View>
     </View>
@@ -124,6 +125,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#f8f8f8",
   },
   wrap: {
+    flex: 1,
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,

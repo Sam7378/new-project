@@ -13,7 +13,7 @@ const DrawerNavigator = ({ setIsLoggedIn }) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.multiRemove(["userToken", "userDetails"]);
+      await AsyncStorage.multiRemove(["userToken"]);
       // await AsyncStorage.setItem("firstTimeUser", "completed");
       setIsLoggedIn(false);
       navigation.reset({

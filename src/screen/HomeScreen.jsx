@@ -8,10 +8,24 @@ import DipsComponent from "../components/DipsComponent";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../context/UserContext";
+import CampaignModal from "../components/CampaignModal";
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
-  console.log("user", user);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const capaignData = {
+    title: "Campaign App Promotion",
+    image: require("../assets/banner1.jpg"),
+    videoUrl: "https://www.youtube.com/watch?v=ZZ84z86Emf0",
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setModalVisible(true);
+    }, 2000);
+  }, []);
+  // console.log("user", user);
   // useEffect(() => {
   //   const fetchUserData = async () => {
   //     try {
@@ -28,24 +42,31 @@ const HomeScreen = ({ navigation }) => {
   //   fetchUserData();
   // }, []);
   return (
-    <ScrollView>
-      <Header navigation={navigation} />
-      <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeText}>
-          Welcome {user?.firstName || "Guest"}
-        </Text>
-        <MaterialIcons
-          name="military-tech"
-          size={24}
-          color="gold"
-          style={styles.medalIcon}
-        />
-      </View>
-      <BannerCarousel />
-      <BalanceSection />
-      <FeatureGrid navigation={navigation} />
-      <DipsComponent navigation={navigation} />
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <ScrollView>
+        <Header navigation={navigation} />
+        <View style={styles.welcomeSection}>
+          <Text style={styles.welcomeText}>
+            Welcome {user?.firstName || "Guest"}
+          </Text>
+          <MaterialIcons
+            name="military-tech"
+            size={24}
+            color="gold"
+            style={styles.medalIcon}
+          />
+        </View>
+        <BannerCarousel />
+        <BalanceSection />
+        <FeatureGrid navigation={navigation} />
+        <DipsComponent navigation={navigation} />
+      </ScrollView>
+      <CampaignModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        campaignData={capaignData}
+      />
+    </View>
   );
 };
 

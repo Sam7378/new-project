@@ -134,7 +134,7 @@ const BankAccount = () => {
                   <Text style={styles.boldText}>UPI Address:</Text> {upiAddress}
                 </Text>
               </View>
-              <View style={styles.rightSection}>
+              <View style={styles.lefttSection}>
                 <RadioButton
                   value="upi"
                   status={selectedMethod === "upi" ? "checked" : "unchecked"}
@@ -227,6 +227,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   rightSection: {
+    right: 30,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  lefttSection: {
     flexDirection: "row",
     alignItems: "center",
   },

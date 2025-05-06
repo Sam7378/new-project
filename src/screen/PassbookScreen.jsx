@@ -85,7 +85,7 @@ const PassbookScreen = ({ navigation }) => {
       title: "Cashback History",
       subtitle: "list of points redeemed by you",
       image: require("../assets/money-back.png"),
-      screen: "Caseback",
+      screen: "Cashback",
     },
   ];
 
