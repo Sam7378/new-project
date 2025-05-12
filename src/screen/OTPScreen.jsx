@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,13 @@ import {
   Alert,
   Image,
   StyleSheet,
+  BackHandler,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   request,
@@ -50,6 +55,24 @@ const OTPScreen = () => {
     setCountdown(60);
     setIsResendActive(false);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        // Optional: Confirm exit
+        Alert.alert("Exit App", "Do you want to exit the app?", [
+          { text: "Cancel", style: "cancel" },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true; // prevent default back action
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   const handleVerifyOtp = () => {
     const enteredOtp = otp.join("");
@@ -233,6 +256,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: 5,
     backgroundColor: "#f9f9f9",
+    color: "#000",
   },
   count: {
     textAlign: "center",

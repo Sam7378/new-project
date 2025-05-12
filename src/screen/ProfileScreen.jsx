@@ -199,7 +199,7 @@ const ProfileScreen = () => {
             <ProfileField label="State" value={userData.state} />
             <ProfileField label="Pincode" value={userData.pincode} />
             <ProfileField label="pan" value={userData.pan} />
-            <ProfileField label="aadhaar" value={userData.aadhaar} />
+            <ProfileField label="aadhaar" value={userData.aadhar} />
 
             <ProfileField
               label="DOB"

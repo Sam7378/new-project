@@ -61,6 +61,7 @@ const UpiAddressScreen = () => {
           placeholder="Enter your UPI ID"
           value={upiAddress}
           onChangeText={setUpiAddress}
+          placeholderTextColor="#999"
         />
       </View>
 
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     padding: 10,
     fontSize: 16,
+    color: "#000",
   },
   addAccountContainer: {
     flexDirection: "row",

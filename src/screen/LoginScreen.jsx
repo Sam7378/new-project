@@ -176,22 +176,23 @@ const RetailerLoginScreen = () => {
       <View style={styles.inputBox}>
         <Text style={styles.label}>Mobile No</Text>
         <TextInput
-          // style={styles.input}
+          style={styles.input}
           keyboardType="numeric"
           maxLength={10}
           placeholder="Enter Mobile Number"
           value={mobileNumber}
           onChangeText={(text) => setMobileNumber(text)}
+          placeholderTextColor="#999"
         />
       </View>
       <View style={styles.inputBox}>
         <Text style={styles.label}>Name</Text>
         <TextInput
-          // style={styles.input}
-
+          style={styles.input}
           placeholder="Enter Name"
           value={username}
           onChangeText={(text) => setUsername(text)}
+          placeholderTextColor="#999"
         />
       </View>
 
@@ -319,6 +320,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 18,
     color: "#555",
+  },
+  input: {
+    color: "black",
   },
   loginButton: {
     flexDirection: "row",

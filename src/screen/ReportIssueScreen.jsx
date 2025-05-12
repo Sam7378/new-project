@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
+    color: "#000",
 
     marginBottom: 20,
     width: "90%",
@@ -273,6 +274,7 @@ const styles = StyleSheet.create({
   longDesc: {
     height: 100,
     textAlignVertical: "top",
+    color: "#000",
   },
   uploadCard: {
     backgroundColor: "#ebf2fb",

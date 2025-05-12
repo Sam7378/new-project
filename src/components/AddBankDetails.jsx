@@ -106,8 +106,8 @@ const AddBankDetails = ({ navigation }) => {
               style={styles.dropdown}
               onPress={() => setBankDropdown(!bankDropdown)}
             >
-              <Text>{selectedBank}</Text>
-              <Ionicons name="chevron-down" size={20} />
+              <Text style={styles.colorText}>{selectedBank}</Text>
+              <Ionicons name="chevron-down" size={20} color="#000" />
             </TouchableOpacity>
             {bankDropdown && (
               <FlatList
@@ -121,7 +121,7 @@ const AddBankDetails = ({ navigation }) => {
                       setBankDropdown(false);
                     }}
                   >
-                    <Text>{item}</Text>
+                    <Text style={styles.colorText}>{item}</Text>
                   </TouchableOpacity>
                 )}
               />
@@ -132,6 +132,7 @@ const AddBankDetails = ({ navigation }) => {
               value={ifscCode}
               onChangeText={setIfscCode}
               placeholder="SBIN0010650"
+              placeholderTextColor="#999"
             />
           </View>
 
@@ -146,6 +147,7 @@ const AddBankDetails = ({ navigation }) => {
               placeholder="Enter Account Number"
               onChangeText={setAccountNumber}
               keyboardType="numeric"
+              placeholderTextColor="#999"
             />
             <Text style={styles.label}>Confirm Account Number</Text>
             <TextInput
@@ -154,6 +156,7 @@ const AddBankDetails = ({ navigation }) => {
               placeholder="Confirm Account Number"
               onChangeText={setConfirmAccountNumber}
               keyboardType="numeric"
+              placeholderTextColor="#999"
             />
             <Text style={styles.label}>Beneficiary Name</Text>
             <TextInput
@@ -161,13 +164,14 @@ const AddBankDetails = ({ navigation }) => {
               value={beneficiaryName}
               placeholder="Enter Beneficiary Name"
               onChangeText={setBeneficiaryName}
+              placeholderTextColor="#999"
             />
             <TouchableOpacity
               style={styles.dropdown}
               onPress={() => setAccountTypeDropdown(!accountTypeDropdown)}
             >
-              <Text>{selectedAccountType}</Text>
-              <Ionicons name="chevron-down" size={20} />
+              <Text style={styles.colorText}>{selectedAccountType}</Text>
+              <Ionicons name="chevron-down" size={20} color="#000" />
             </TouchableOpacity>
             {accountTypeDropdown && (
               <FlatList
@@ -181,7 +185,7 @@ const AddBankDetails = ({ navigation }) => {
                       setAccountTypeDropdown(false);
                     }}
                   >
-                    <Text>{item}</Text>
+                    <Text style={styles.colorText}>{item}</Text>
                   </TouchableOpacity>
                 )}
               />
@@ -226,8 +230,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 3,
   },
-  label: { fontSize: 16, fontWeight: "bold", marginTop: 10 },
-  input: { borderBottomWidth: 1, padding: 5, marginTop: 5 },
+  label: { fontSize: 16, fontWeight: "bold", marginTop: 10, color: "#333" },
+  input: { borderBottomWidth: 1, padding: 5, marginTop: 5, color: "#333" },
   dropdown: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -236,6 +240,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#eee",
     marginTop: 5,
     borderRadius: 5,
+    color: "#333",
+  },
+  colorText: {
+    color: "#333",
   },
   item: {
     padding: 10,

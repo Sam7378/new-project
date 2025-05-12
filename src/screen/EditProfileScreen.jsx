@@ -126,7 +126,9 @@ const EditProfileScreen = () => {
         style={styles.input}
         onPress={() => setShowGenderDropdown(!showGenderDropdown)}
       >
-        <Text>{formData.gender || "Select Gender"}</Text>
+        <Text style={styles.genderColor}>
+          {formData.gender || "Select Gender"}
+        </Text>
       </TouchableOpacity>
       {showGenderDropdown && (
         <View style={styles.dropdown}>
@@ -139,7 +141,7 @@ const EditProfileScreen = () => {
               }}
               style={styles.dropdownItem}
             >
-              <Text>{option}</Text>
+              <Text style={styles.genderColor}>{option}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -267,6 +269,9 @@ const styles = StyleSheet.create({
     top: 15,
     left: 50,
   },
+  genderColor: {
+    color: "#333",
+  },
   profileContainer: {
     alignItems: "center",
     marginVertical: 15,
@@ -300,6 +305,7 @@ const styles = StyleSheet.create({
   form: {
     padding: 20,
     paddingBottom: 100,
+    color: "#333",
   },
   inputGroup: {
     marginBottom: 15,
@@ -316,6 +322,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     fontSize: 14,
+    color: "#000",
   },
   dropdown: {
     backgroundColor: "#f0f0f0",

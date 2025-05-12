@@ -12,6 +12,45 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { UserContext } from "../context/UserContext";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+const userinfo = [
+  {
+    key: "pincode",
+    label: "Pincode",
+  },
+  {
+    key: "address",
+    label: "Address",
+  },
+  {
+    key: "city",
+    label: "City",
+  },
+  {
+    key: "district",
+    label: "District",
+  },
+  {
+    key: "state",
+    label: "State",
+  },
+  {
+    key: "pan",
+    label: "Pan",
+  },
+];
+
+const DateInput = ({ label, value, onPress }) => (
+  <TouchableOpacity style={styles.inputDate} onPress={onPress}>
+    <Text style={styles.labelText}>{value ? value.toDateString() : label}</Text>
+    <MaterialCommunityIcons
+      name="calendar-month-outline"
+      size={20}
+      color="#666"
+    />
+  </TouchableOpacity>
+);
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
@@ -34,8 +73,10 @@ const RegistrationScreen = () => {
   const [otpVisible, setOtpVisible] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [generatedOtp, setGeneratedOtp] = useState("");
+  const [dob, setDob] = useState(false);
   const [showDobPicker, setShowDobPicker] = useState(false);
   const [showAnniversaryPicker, setShowAnniversaryPicker] = useState(false);
+  const [anniversary, setAnniversary] = useState(false);
   const { updateUser } = useContext(UserContext);
 
   const handleChange = (name, value) => setForm({ ...form, [name]: value });
@@ -89,7 +130,7 @@ const RegistrationScreen = () => {
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View
         style={{
-          backgroundColor: "red",
+          backgroundColor: "#ca000b",
           padding: 15,
           flexDirection: "row",
           alignItems: "center",
@@ -108,18 +149,56 @@ const RegistrationScreen = () => {
       <Text style={styles.textTitle}>
         Please fill the following form to register
       </Text>
-      <View style={{ padding: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ padding: 10 }}>
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>Outlet Name</Text>
           <TextInput
-            placeholder="Mobile Number"
-            style={[styles.input, { flex: 1 }]}
-            keyboardType="numeric"
-            maxLength={10}
-            onChangeText={(text) => handleChange("mobileNumber", text)}
+            placeholder="firm_Name"
+            style={styles.input}
+            placeholderTextColor="#333"
+            onChangeText={(text) => handleChange("firstName", text)}
           />
+        </View>
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>Outlet_id</Text>
+          <TextInput
+            placeholder="firm_id"
+            keyboardType="numeric"
+            style={styles.input}
+            placeholderTextColor="#333"
+            onChangeText={(text) => handleChange("formId", text)}
+          />
+        </View>
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>Owner Name</Text>
+          <TextInput
+            placeholder="name"
+            style={styles.input}
+            placeholderTextColor="#333"
+            onChangeText={(text) => handleChange("ownerName", text)}
+          />
+        </View>
+        <View style={styles.mobileBox}>
+          <Text style={styles.label}>Mobile Number</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TextInput
+              placeholder="mobile no"
+              style={[styles.input, { flex: 1 }]}
+              keyboardType="numeric"
+              maxLength={10}
+              onChangeText={(text) => handleChange("mobileNumber", text)}
+              placeholderTextColor="#333"
+            />
+          </View>
           {!isOtpVerified && (
             <TouchableOpacity style={styles.otpButton} onPress={generateOtp}>
-              <Text style={{ color: "white" }}>Get OTP</Text>
+              <Text
+                style={{
+                  color: "white",
+                }}
+              >
+                get {"\n"}otp
+              </Text>
             </TouchableOpacity>
           )}
           {isOtpVerified && (
@@ -132,85 +211,105 @@ const RegistrationScreen = () => {
           )}
         </View>
         {otpVisible && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TextInput
-              placeholder="Enter OTP"
-              style={[styles.input, { flex: 1 }]}
-              keyboardType="numeric"
-              onChangeText={(text) => {
-                if (/^\d*$/.test(text)) {
-                  handleChange("otp", text);
-                }
-              }}
-            />
-            <TouchableOpacity
-              style={styles.verifyButton}
-              onPress={handleOtpVerify}
-            >
-              <Text style={{ color: "white" }}>Verify</Text>
-            </TouchableOpacity>
+          <View style={styles.mobileBox}>
+            <Text style={styles.label}>Enter OTP</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                placeholder="Enter OTP"
+                style={[styles.input, { flex: 1 }]}
+                keyboardType="numeric"
+                onChangeText={(text) => {
+                  if (/^\d*$/.test(text)) {
+                    handleChange("otp", text);
+                  }
+                }}
+              />
+
+              <TouchableOpacity
+                style={styles.verifyButton}
+                onPress={handleOtpVerify}
+              >
+                <Text style={{ color: "white" }}>Verify</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
-        {[
-          "firstName",
-          "formId",
-          "ownerName",
-          "pincode",
-          "address",
-          "city",
-          "district",
-          "state",
-          "pan",
-        ].map((field) => (
-          <TextInput
-            key={field}
-            placeholder={field}
-            style={styles.input}
-            onChangeText={(text) => handleChange(field, text)}
-          />
+        {userinfo.map(({ key, label }) => (
+          <View style={styles.inputBox} key={key}>
+            <Text style={styles.label}>{label}</Text>
+            <TextInput
+              // key={field}
+              placeholder={label}
+              style={styles.input}
+              placeholderTextColor="#333"
+              onChangeText={(text) => handleChange(key, text)}
+            />
+          </View>
         ))}
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>Aadhar</Text>
+          <TextInput
+            placeholder="aadhar"
+            style={styles.input}
+            keyboardType="numeric"
+            maxLength={12}
+            onChangeText={(text) => handleChange("aadhar", text)}
+            placeholderTextColor="#333"
+          />
+        </View>
+        <View style={styles.dateContainer}>
+          <DateInput
+            label="Anniversary Date"
+            value={anniversary}
+            onPress={() => setShowAnniversaryPicker(true)}
+          />
+          {showAnniversaryPicker && (
+            <DateTimePicker
+              value={anniversary || new Date()}
+              mode="date"
+              display="default"
+              onChange={(event, date) => {
+                setShowAnniversaryPicker(false);
+                if (date) setAnniversary(date);
+              }}
+            />
+          )}
 
-        <TextInput
-          placeholder="Aadhar Number"
-          style={styles.input}
-          keyboardType="numeric"
-          maxLength={12}
-          onChangeText={(text) => handleChange("aadhar", text)}
-        />
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => setShowDobPicker(true)}
-        >
-          <Text>{form.dob.toDateString()}</Text>
-        </TouchableOpacity>
-        {showDobPicker && (
-          <DateTimePicker
-            value={form.dob}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
-              setShowDobPicker(false);
-              if (date) handleChange("dob", date);
-            }}
+          <DateInput
+            label="D.O.B"
+            value={dob}
+            onPress={() => setShowDobPicker(true)}
           />
-        )}
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => setShowAnniversaryPicker(true)}
-        >
-          <Text>{form.anniversary.toDateString()}</Text>
-        </TouchableOpacity>
-        {showAnniversaryPicker && (
-          <DateTimePicker
-            value={form.anniversary}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
-              setShowAnniversaryPicker(false);
-              if (date) handleChange("anniversary", date);
-            }}
+          {showDobPicker && (
+            <DateTimePicker
+              value={dob || new Date()}
+              mode="date"
+              display="default"
+              onChange={(event, date) => {
+                setShowDobPicker(false);
+                if (date) setDob(date);
+              }}
+            />
+          )}
+        </View>
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>ASM</Text>
+          <TextInput
+            placeholder="asm *"
+            style={styles.input}
+            placeholderTextColor="#333"
+            onChangeText={(text) => handleChange("formId", text)}
           />
-        )}
+        </View>
+        <View style={styles.inputBox}>
+          <Text style={styles.label}>FSR</Text>
+          <TextInput
+            placeholder="fsr *"
+            style={styles.input}
+            placeholderTextColor="#333"
+            onChangeText={(text) => handleChange("formId", text)}
+          />
+        </View>
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
@@ -225,31 +324,87 @@ const styles = {
     marginVertical: 10,
     fontSize: 20,
     fontWeight: "bold",
+    color: "#333",
+  },
+  inputBox: {
+    borderWidth: 0.5,
+    borderColor: "gray",
+    // borderRadius: 5,
+    // padding: ,
+    marginLeft: 10,
+    marginBottom: 20,
+  },
+  label: {
+    position: "absolute",
+    top: -10,
+    left: 10,
+    backgroundColor: "white",
+    paddingHorizontal: 5,
+    fontSize: 16,
+    color: "gray",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
+    fontSize: 15,
+    // borderWidth: 1,
+    // borderColor: "#ccc",
+
+    // marginVertical: 5,
+    // borderRadius: 5,
+    // backgroundColor: "#f9f9f9",
+    left: 10,
+    color: "#000",
+  },
+  mobileBox: {
+    left: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 0.5,
+    borderColor: "gray",
+    marginBottom: 20,
+    width: "75%",
   },
   otpButton: {
-    backgroundColor: "red",
+    backgroundColor: "#c9202c",
     padding: 10,
-    marginLeft: 10,
-    borderRadius: 5,
+    marginLeft: 35,
+    borderRadius: 3,
+    width: 45,
+    height: 55,
+    justifyContent: "center",
+    alignItems: "center",
   },
   verifyButton: {
     backgroundColor: "green",
-    padding: 10,
-    marginLeft: 10,
+    padding: 20,
+    marginLeft: 25,
     borderRadius: 5,
   },
+  dateContainer: {
+    padding: 16,
+  },
+  inputDate: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f1f1f1",
+    padding: 14,
+    borderRadius: 3,
+    marginBottom: 10,
+  },
+  labelText: {
+    color: "#000",
+    fontSize: 16,
+  },
+  // dateText: {
+  //   color: "#333",
+  // },
   submitButton: {
     backgroundColor: "#c9202c",
     padding: 15,
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 5,
+    width: "50%",
+    alignSelf: "center",
   },
   buttonText: {
     color: "#fff",
