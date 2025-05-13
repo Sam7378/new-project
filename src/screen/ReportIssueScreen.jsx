@@ -82,12 +82,15 @@ const ReportIssueScreen = ({ navigation, route }) => {
 
       {/* Dropdown */}
       <View style={styles.wrap}>
+        {/* <Text style={{ color: "#000", fontSize: 14, marginBottom: 5 }}>
+          Selected Issue Type *
+        </Text> */}
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setDropdownVisible(!isDropdownVisible)}
         >
-          <Text style={styles.dropdownText}>
-            {selectedIssue || "Appointment Reasion *"}
+          <Text style={{ color: selectedIssue ? "#000" : "#333" }}>
+            {selectedIssue || "Select issue type *"}
           </Text>
           <Ionicons name="chevron-down" size={20} color="#333" />
         </TouchableOpacity>
@@ -100,8 +103,9 @@ const ReportIssueScreen = ({ navigation, route }) => {
               <TouchableOpacity
                 style={styles.item}
                 onPress={() => {
-                  setSelectedIssue(item);
-                  setDropdownVisible(false);
+                  handleIssueSelection(item);
+                  // setSelectedIssue(item);
+                  // setDropdownVisible(false);
                 }}
               >
                 <Text style={styles.dropItem}>{item}</Text>
@@ -134,13 +138,13 @@ const ReportIssueScreen = ({ navigation, route }) => {
         </View>
       </Modal> */}
 
-        <Divider style={{ marginVertical: 15 }} />
+        {/* <Divider style={{ marginVertical: 15 }} /> */}
 
         {/* Short Description */}
         <TextInput
           placeholder="Short Description *"
           value={shortDesc}
-          placeholderTextColor={"#000"}
+          placeholderTextColor={"#333"}
           onChangeText={setShortDesc}
           style={styles.input}
         />
@@ -210,13 +214,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dropdownButton: {
-    padding: 15,
-    // borderWidth: 1,
+    borderWidth: 1,
     borderColor: "#ccc",
-    // borderRadius: 8,
+    borderRadius: 5,
+    padding: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 10,
+    width: "90%",
+    alignSelf: "center",
   },
   dropItem: {
     color: "#000",
@@ -235,7 +242,7 @@ const styles = StyleSheet.create({
 
   dropdownText: {
     fontSize: 16,
-    color: "#000",
+    color: "#333",
   },
 
   dropdownContainer: {

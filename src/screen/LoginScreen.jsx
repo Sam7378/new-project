@@ -181,7 +181,15 @@ const RetailerLoginScreen = () => {
           maxLength={10}
           placeholder="Enter Mobile Number"
           value={mobileNumber}
-          onChangeText={(text) => setMobileNumber(text)}
+          onChangeText={(text) => {
+            setMobileNumber(text);
+            if (text.length === 10) {
+              const stored = storedUser || user;
+              if (stored?.mobileNumber === text) {
+                setUsername(stored.firstName);
+              }
+            }
+          }}
           placeholderTextColor="#999"
         />
       </View>
@@ -212,61 +220,6 @@ const RetailerLoginScreen = () => {
         <Icon name="arrowright" size={22} color="white" style={styles.arrow} />
       </TouchableOpacity>
     </View>
-
-    // <View style={styles.container}>
-    //   <View style={styles.header}>
-    //     <Image
-    //       source={require("../assets/demohead.png")}
-    //       style={styles.headerImage}
-    //     />
-    //     <TouchableOpacity
-    //       onPress={() => navigation.navigate("SIGNUP")}
-    //       style={styles.registerButton}
-    //     >
-    //       <Text style={styles.registerText}>Register</Text>
-    //     </TouchableOpacity>
-    //   </View>
-
-    //   <Text style={styles.title}>Tell us your mobile number</Text>
-    //   <View style={styles.inputBox}>
-    //     <Text style={styles.label}>Mobile Number</Text>
-    //     <TextInput
-    //       style={styles.input}
-    //       keyboardType="phone-pad"
-    //       value={mobileNumber}
-    //       onChangeText={(text) => setMobileNumber(text)}
-    //     />
-    //   </View>
-    //   <View style={styles.inputBox}>
-    //     <Text style={styles.label}>Name</Text>
-    //     <TextInput
-    //       style={styles.input}
-    //       value={username}
-    //       onChangeText={(text) => setUsername(text)}
-    //     />
-    //   </View>
-
-    //   <View style={styles.checkboxContainer}>
-    //     <CheckBox
-    //       isChecked={isChecked}
-    //       onClick={() => setIsChecked(!isChecked)}
-    //       checkBoxColor="red"
-    //     />
-    //     <Text style={styles.checkboxText}>
-    //       I agree to the Terms & Conditions
-    //     </Text>
-    //   </View>
-
-    //   <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-    //     <Text style={styles.loginText}>Login</Text>
-    //     <Icon
-    //       style={styles.rightArrow}
-    //       name="arrowright"
-    //       size={22}
-    //       color="white"
-    //     />
-    //   </TouchableOpacity>
-    // </View>
   );
 };
 
@@ -366,66 +319,4 @@ const styles = StyleSheet.create({
   arrow: {
     marginLeft: 15,
   },
-
-  // container: { flex: 1, backgroundColor: "#fff", padding: 20 },
-  // header: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "space-between",
-  //   marginBottom: 20,
-  // },
-  // headerImage: { width: 120, height: 50, resizeMode: "contain" },
-  // registerButton: {
-  //   backgroundColor: "#171717",
-  //   paddingVertical: 12,
-  //   borderRadius: 5,
-  //   paddingHorizontal: 20,
-  // },
-  // registerText: { fontSize: 18, color: "#ffffff", fontWeight: "bold" },
-  // title: {
-  //   fontSize: 35,
-  //   fontWeight: "bold",
-  //   color: "#171717",
-  //   marginBottom: 55,
-  //   marginTop: 45,
-  // },
-  // inputBox: {
-  //   borderWidth: 1,
-  //   borderColor: "gray",
-  //   borderRadius: 5,
-  //   padding: 10,
-  //   marginBottom: 15,
-  // },
-  // label: {
-  //   fontSize: 14,
-  //   color: "gray",
-  // },
-  // input: {
-  //   fontSize: 16,
-  //   paddingTop: 5,
-  // },
-  // checkboxContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   marginBottom: 20,
-  // },
-  // checkboxText: { marginLeft: 8, fontSize: 18, color: "#555" },
-  // loginButton: {
-  //   flexDirection: "row",
-  //   backgroundColor: "#c91212",
-  //   width: "60%",
-  //   padding: 17,
-  //   borderRadius: 4,
-  //   alignItems: "center",
-  //   alignSelf: "center",
-  // },
-  // loginText: {
-  //   color: "white",
-  //   fontSize: 18,
-  //   fontWeight: "bold",
-  //   marginRight: 10,
-  // },
-  // rightArrow: {
-  //   marginLeft: 2,
-  // },
 });

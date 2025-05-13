@@ -231,11 +231,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   toggleWrap: {
-    width: "85%",
-    height: "45%",
+    width: "90%",
+    height: "50%",
     borderWidth: 1,
     borderColor: "red",
-    marginLeft: 30,
+    marginLeft: 18,
     overflow: "hidden",
     marginTop: 80,
     borderRadius: 18,
@@ -319,13 +319,14 @@ const styles = StyleSheet.create({
 
     flex: 1,
     justifyContent: "space-between",
+    position: "relative",
   },
   historyTextContainer: {
     flex: 1,
     marginLeft: 10,
   },
   midTitle: {
-    left: 18,
+    left: 13,
   },
   historyTitle: {
     fontSize: 14,
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   rightIcon: {
-    left: 20,
+    left: 15,
   },
 });
 
