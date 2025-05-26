@@ -32,7 +32,6 @@ import RetailerLoginScreen from "../screen/LoginScreen";
 import GalleryScreen from "../screen/GalleryScreen";
 import MediaScreen from "../screen/MediaScreen";
 import VideosScreen from "../screen/VideosScreen";
-import PdfViewerScreen from "../screen/PdfViwerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -111,7 +110,6 @@ const AppNavigator = ({ setIsLoggedIn }) => {
       <Stack.Screen name="Gallery" component={GalleryScreen} />
       <Stack.Screen name="Media" component={MediaScreen} />
       <Stack.Screen name="Videos" component={VideosScreen} />
-      {/* <Stack.Screen name="PdfViewer" component={PdfViewerScreen} /> */}
     </Stack.Navigator>
   );
 };

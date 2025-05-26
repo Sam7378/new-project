@@ -21,6 +21,7 @@ import {
   openSettings,
 } from "react-native-permissions";
 import { UserContext } from "../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
 
 const RetailerLoginScreen = () => {
   const navigation = useNavigation();
@@ -30,7 +31,8 @@ const RetailerLoginScreen = () => {
   const [storedUser, setStoredUser] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
 
-  const { user } = useContext(UserContext); // Assuming you have a UserContext to manage user state
+  const { user } = useContext(UserContext);
+  // const dispatch = useDispatch();
 
   console.log("Stored User:", storedUser);
   useEffect(() => {
@@ -54,7 +56,7 @@ const RetailerLoginScreen = () => {
 
     getStoredUser();
   }, []);
-
+  // const user = useSelector((state) => state.user.userData);
   const validateMobile = () => {
     if (!username.trim() || !mobileNumber.trim()) {
       Alert.alert("Error", "Please enter mobile number and name.");
@@ -77,55 +79,73 @@ const RetailerLoginScreen = () => {
     if (!validateMobile()) return; // Validate mobile number and username
     const trimmedMobile = mobileNumber.trim();
     const trimmedUsername = username.trim();
-    if (!trimmedMobile || !trimmedUsername) {
-      Alert.alert("Error", "Please enter mobile number and name.");
+    if (!user) {
+      Alert.alert("Error", "User data not found. Please register first.");
       return;
     }
 
-    if (!validateMobile(trimmedMobile)) {
-      Alert.alert("Invalid Number", "Enter a valid 10-digit mobile number.");
+    if (
+      user?.mobileNumber === trimmedMobile &&
+      user?.firstName === trimmedUsername
+    ) {
+      navigation.navigate("OtpScreen", { mobileNumber: trimmedMobile });
+      Alert.alert("Success", "Login Successful", [
+        { text: "OK", onPress: requestLocationPermission },
+      ]);
+    } else {
+      Alert.alert("Error", "Invalid username or mobile number.");
       return;
-    }
-    if (!isChecked) {
-      Alert.alert("Term & Conditions", "Please agree to the terms.");
-      return;
-    }
-
-    try {
-      let matchedUser = null;
-      if (
-        user?.mobileNumber === trimmedMobile &&
-        user?.firstName === trimmedUsername
-      ) {
-        matchedUser = user;
-      } else if (
-        storedUser?.mobileNumber === trimmedMobile &&
-        storedUser?.firstName === trimmedUsername
-      ) {
-        matchedUser = storedUser;
-      }
-
-      if (matchedUser) {
-        // Generate or retrieve the token (for example, from the matchedUser)
-        const userToken = "some_unique_token_here"; // Replace with your actual token retrieval logic
-
-        // Store the token in AsyncStorage
-        await AsyncStorage.setItem("userToken", userToken);
-        console.log("Token stored:", userToken);
-
-        navigation.navigate("OtpScreen", { mobileNumber: trimmedMobile });
-
-        Alert.alert("Success", "Login Successful", [
-          { text: "OK", onPress: requestLocationPermission },
-        ]);
-      } else {
-        Alert.alert("Error", "Invalid username or mobile number.");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
+  // if (!trimmedMobile || !trimmedUsername) {
+  //   Alert.alert("Error", "Please enter mobile number and name.");
+  //   return;
+  // }
+
+  // if (!validateMobile(trimmedMobile)) {
+  //   Alert.alert("Invalid Number", "Enter a valid 10-digit mobile number.");
+  //   return;
+  // }
+  // if (!isChecked) {
+  //   Alert.alert("Term & Conditions", "Please agree to the terms.");
+  //   return;
+  // }
+
+  // try {
+  //   let matchedUser = null;
+  //   if (
+  //     user?.mobileNumber === trimmedMobile &&
+  //     user?.firstName === trimmedUsername
+  //   ) {
+  //     matchedUser = user;
+  //   } else if (
+  //     storedUser?.mobileNumber === trimmedMobile &&
+  //     storedUser?.firstName === trimmedUsername
+  //   ) {
+  //     matchedUser = storedUser;
+  //   }
+
+  //   if (matchedUser) {
+  //     // Generate or retrieve the token (for example, from the matchedUser)
+  //     const userToken = "some_unique_token_here"; // Replace with your actual token retrieval logic
+
+  //     // Store the token in AsyncStorage
+  //     await AsyncStorage.setItem("userToken", userToken);
+  //     console.log("Token stored:", userToken);
+
+  //     navigation.navigate("OtpScreen", { mobileNumber: trimmedMobile });
+
+  //     Alert.alert("Success", "Login Successful", [
+  //       { text: "OK", onPress: requestLocationPermission },
+  //     ]);
+  //   } else {
+  //     Alert.alert("Error", "Invalid username or mobile number.");
+  //   }
+  // } catch (error) {
+  //   console.error("Login error:", error);
+  //   Alert.alert("Error", "Something went wrong. Please try again.");
+  // }
+  // };
 
   const requestLocationPermission = async () => {
     const permission =

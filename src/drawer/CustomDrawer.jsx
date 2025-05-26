@@ -15,6 +15,7 @@ import MenuItem from "../components/MenuItem";
 import ShareModal from "../components/ShareModal";
 import { DeviceEventEmitter } from "react-native";
 import { UserContext } from "../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
 
 const CustomDrawer = ({ onLogout }) => {
   const navigation = useNavigation();
@@ -25,6 +26,8 @@ const CustomDrawer = ({ onLogout }) => {
   );
   const [modalVisible, setModalVisible] = useState(false);
   const { user } = useContext(UserContext);
+  // const user = useSelector((state) => state.user.formData);
+
   const firstName = user?.firstName || "Guest";
   const profileImg = user?.profileImage
     ? { uri: user.profileImage }

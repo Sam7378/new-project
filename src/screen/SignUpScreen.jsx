@@ -11,8 +11,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { UserContext } from "../context/UserContext";
+// import { UserContext } from "../context/UserContext";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { UserContext } from "../context/UserContext";
+// import { useDispatch, useSelector } from "react-redux";
+// import { saveFormData } from "../redux/userSlice";
 
 const userinfo = [
   {
@@ -54,6 +57,8 @@ const DateInput = ({ label, value, onPress }) => (
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
+  // const dispatch = useDispatch();
+
   const [form, setForm] = useState({
     firstName: "",
     formId: "",
@@ -69,6 +74,8 @@ const RegistrationScreen = () => {
     aadhar: "",
     dob: new Date(),
     anniversary: new Date(),
+    // asm: "",
+    // fsr: "",
   });
   const [otpVisible, setOtpVisible] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
@@ -110,9 +117,25 @@ const RegistrationScreen = () => {
       Alert.alert("Error", "Please fill all required fields.");
       return;
     }
+
+    // dispatch(saveFormData(form));
+    // Alert.alert(
+    //   "Success",
+    //   "Congratulations, your account has been successfully created",
+    //   [{ text: "OK", onPress: () => navigation.navigate("Retailer") }]
+    // );
+
+    const userData = {
+      ...form,
+      dob: dob ? dob.toDateString() : null,
+      anniversary: anniversary ? anniversary.toDateString() : null,
+    };
+
     try {
-      await AsyncStorage.setItem("userDetails", JSON.stringify(form));
+      // await AsyncStorage.setItem("userDetails", JSON.stringify(form));
+      await AsyncStorage.setItem("userDetails", JSON.stringify(userData));
       await AsyncStorage.setItem("userMobile", form.mobileNumber); // Store mobile number separately
+      // dispatch(setUser(userData));
       const storeData = await AsyncStorage.getItem("userDetails");
       await updateUser(form);
       console.log("stored Data", JSON.parse(storeData));
@@ -298,7 +321,7 @@ const RegistrationScreen = () => {
             placeholder="asm *"
             style={styles.input}
             placeholderTextColor="#333"
-            onChangeText={(text) => handleChange("formId", text)}
+            onChangeText={(text) => handleChange("asm", text)}
           />
         </View>
         <View style={styles.inputBox}>
@@ -307,7 +330,7 @@ const RegistrationScreen = () => {
             placeholder="fsr *"
             style={styles.input}
             placeholderTextColor="#333"
-            onChangeText={(text) => handleChange("formId", text)}
+            onChangeText={(text) => handleChange("frs", text)}
           />
         </View>
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>

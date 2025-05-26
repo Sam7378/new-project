@@ -9,11 +9,14 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../context/UserContext";
 import CampaignModal from "../components/CampaignModal";
+import { useDispatch, useSelector } from "react-redux";
+import { stat } from "react-native-fs";
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
+  // const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-
+  // const user = useSelector((state) => state.user.formData);
   const capaignData = {
     title: "Campaign App Promotion",
     image: require("../assets/banner1.jpg"),
@@ -24,6 +27,7 @@ const HomeScreen = ({ navigation }) => {
     const timer = setTimeout(() => {
       setModalVisible(true);
     }, 2000);
+    return () => clearTimeout(timer);
   }, []);
   // console.log("user", user);
   // useEffect(() => {
@@ -49,6 +53,9 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.welcomeText}>
             Welcome {user?.firstName || "Guest"}
           </Text>
+          {/* <Text style={styles.welcomeText}>
+            Welcome {user?.firstName || "Guest"}
+          </Text> */}
           <MaterialIcons
             name="military-tech"
             size={24}
